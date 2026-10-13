@@ -1,0 +1,33 @@
+{
+  "id": "jofit-green",
+  "name": "JoFit Green",
+  "colors": {
+    "primary": "#008050",
+    "primaryHover": "#00693f",
+    "primaryDark": "#005030",
+    "accent": "#d4b36a",
+    "secondary": "#232323",
+    "onPrimary": "#ffffff",
+    "onSecondary": "#ffffff",
+    "title": "#222222",
+    "body": "#575757",
+    "surface": "#ffffff",
+    "surfaceMuted": "#f6f7f5",
+    "border": "#e9e9e9"
+  },
+  "typography": {
+    "fontFamily": "Poppins, Tajawal, system-ui, sans-serif",
+    "scale": "1",
+    "titleWeight": "700"
+  },
+  "shape": {
+    "skew": "-15deg",
+    "radius": "0px",
+    "buttonRadius": "0px"
+  },
+  "layout": {
+    "maxWidth": "1200px",
+    "sectionSpacing": "6.25rem",
+    "headerMode": "fixed"
+  }
+}

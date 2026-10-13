@@ -1,0 +1,217 @@
+@import "tailwindcss";
+@import "./tokens.css";
+/* The header's, the logo's and the route progress bar's non-utility half. */
+@import "./chrome.css";
+
+/*
+ * GLOBAL STYLESHEET — THE FORMAL SITE.
+ *
+ * Only what has to be true of every page: the canvas, the reading rhythm, the
+ * two text devices the whole site shares (the eyebrow and the heading face),
+ * and the background patterns that stand in for photography. Everything else
+ * is a component's business.
+ *
+ * WHAT WENT. This file used to carry the BodyShape template's language: the
+ * sheared parallelogram, the offcut chip, the raked card wash, the section
+ * rule, the hero banner's ghost word and hotspots. The client rejected all of
+ * it — "this is not a gym" — and the site was redesigned as a certification
+ * body's. The class names survive only as the neutral adapters at the foot of
+ * this file, so markup not yet rebuilt still renders as the new design.
+ */
+
+@layer base {
+  html {
+    height: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    background: var(--color-surface);
+    color: var(--color-body);
+    font-family: var(--font-text);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  /*
+   * HEADINGS: Alexandria, in the brand's own dark ink.
+   *
+   * `@layer base`, so any utility on the element wins — a heading on a dark band
+   * still has to name its own colour (`text-white`), because a rule on the
+   * element beats a colour inherited from the band. That is the one trap this
+   * design inherits from the old one; `PageHero` and `Section tone="deep"` name
+   * it for you.
+   */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  /* Latin display type is set a touch tight; Arabic never is — tracking breaks
+     the joins between letters. */
+  :root:lang(en) :is(h1, h2, h3) {
+    letter-spacing: -0.015em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+}
+
+/* Arabic needs more line height than Latin at the same size to stay legible. */
+:root:lang(ar) body {
+  line-height: 1.85;
+}
+
+@layer components {
+  /*
+   * THE EYEBROW.
+   *
+   * The short label above a heading — "Accredited programmes", "Why JoFit". A
+   * gold dash leads it, drawn in the reading direction, so it starts where the
+   * eye starts. Never uppercase: Arabic has no capitals, and one design across
+   * both languages beats two.
+   */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .eyebrow::before {
+    content: "";
+    inline-size: 1.5rem;
+    block-size: 2px;
+    border-radius: 2px;
+    background: var(--color-accent);
+  }
+
+  .eyebrow[data-tone="dark"] {
+    color: var(--color-accent);
+  }
+
+  /*
+   * THE LINEWORK THAT REPLACES PHOTOGRAPHY.
+   *
+   * The dark bands used to be gym photographs under a green wash. A
+   * certification body's surfaces are closer to the paper its certificates are
+   * printed on: fine interlaced lines, the security printing on a diploma or a
+   * banknote. These are masks filled with `currentColor`, so a band sets their
+   * strength with an ordinary text colour (`text-white/[0.06]`) and they follow
+   * the theme like everything else.
+   */
+  .pattern-waves {
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='48' viewBox='0 0 240 48'%3E%3Cg fill='none' stroke='black' stroke-width='1'%3E%3Cpath d='M0 24 C 30 4 90 4 120 24 S 210 44 240 24'/%3E%3Cpath d='M0 24 C 30 44 90 44 120 24 S 210 4 240 24'/%3E%3Cpath d='M0 12 C 30 -2 90 -2 120 12 S 210 26 240 12'/%3E%3Cpath d='M0 36 C 30 50 90 50 120 36 S 210 22 240 36'/%3E%3C/g%3E%3C/svg%3E");
+    mask-size: 240px 48px;
+  }
+
+  .pattern-grid {
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='1' cy='1' r='1' fill='black'/%3E%3C/svg%3E");
+    mask-size: 32px 32px;
+  }
+
+  /*
+   * AVAILABILITY, AS A SIGNAL: shop grid, product page, rental, cart, orders.
+   * A word always sits beside the dot; the dot makes it findable, not readable.
+   */
+  .stock-signal {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-title);
+  }
+
+  .stock-signal::before {
+    content: "";
+    inline-size: 8px;
+    block-size: 8px;
+    flex: none;
+    border-radius: 9999px;
+    background-color: var(--stock-dot, var(--color-primary));
+  }
+
+  .stock-signal[data-stock="in-stock"] {
+    --stock-dot: var(--color-primary);
+    color: var(--color-primary-dark);
+  }
+
+  .stock-signal[data-stock="low-stock"] {
+    --stock-dot: var(--color-accent);
+  }
+
+  .stock-signal[data-stock="pre-order"] {
+    --stock-dot: var(--color-primary-40);
+    color: var(--color-body);
+  }
+
+  .stock-signal[data-stock="out-of-stock"] {
+    color: color-mix(in srgb, var(--color-body) 70%, transparent);
+  }
+
+  .stock-signal[data-stock="out-of-stock"]::before {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 1.5px currentColor;
+  }
+
+  /*
+   * The select chevron, drawn in the field's end padding. It lives here, not in
+   * an arbitrary Tailwind class, because the data URI holds spaces and Tailwind
+   * splits class names on whitespace.
+   */
+  .select-chevron {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none'%3E%3Cpath d='m3.5 5.5 3.5 3.5 3.5-3.5' stroke='%23575757' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+  }
+
+  [dir="rtl"] .select-chevron,
+  .select-chevron:dir(rtl) {
+    background-position: left 1rem center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
