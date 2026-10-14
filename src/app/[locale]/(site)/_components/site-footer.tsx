@@ -10,6 +10,7 @@ import { flattenResolvedNav, resolveSiteNav } from "../../_components/site-nav-d
 
 const INSTAGRAM_URL = "https://www.instagram.com/jofit_co";
 const WHATSAPP_URL = "https://wa.me/962772116067";
+const FACEBOOK_URL = "https://www.facebook.com/share/1Yo8Tjsjvx/";
 
 /**
  * THE FOOTER — the formal redesign.
@@ -31,11 +32,17 @@ const WHATSAPP_URL = "https://wa.me/962772116067";
 export async function SiteFooter({ locale }: { locale: Locale }) {
   const t = getTranslator(locale);
   const explore = flattenResolvedNav(await resolveSiteNav(locale));
-  const secondary = footerNav.filter((item) => !item.feature || isFeatureEnabled(item.feature));
+  const exploreHrefs = new Set(explore.map((item) => item.href));
+  const secondary = footerNav.filter(
+    (item) => (!item.feature || isFeatureEnabled(item.feature)) && !exploreHrefs.has(localePath(locale, item.href)),
+  );
   const phone = t("site.contactPhone");
 
   return (
-    <footer className="relative isolate overflow-hidden bg-deep-2 text-[14.5px] text-white/65">
+    <footer
+      className="relative isolate overflow-hidden bg-deep-2 text-[14.5px] text-white/65"
+      style={{ ["--color-accent" as string]: "#d4b36a" }}
+    >
       <span aria-hidden="true" className="pattern-waves absolute inset-0 -z-10 text-white/[0.03]" />
       <span aria-hidden="true" className="absolute -end-56 -bottom-72 -z-10 size-[44rem] text-accent/[0.09]">
         <Rosette className="spin-slow size-full" />
@@ -51,7 +58,7 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
             <p className="mt-6 leading-relaxed">{t("site.footerAbout")}</p>
 
             <section aria-labelledby="footer-accredited" className="mt-8">
-              <h2 id="footer-accredited" className="font-sans text-[13px] font-semibold text-accent">
+              <h2 id="footer-accredited" className="font-sans text-[13px] font-semibold text-[#d4b36a]">
                 {t("site.accredited")}
               </h2>
               <ul className="mt-3 flex flex-wrap items-center gap-2.5">
@@ -150,6 +157,15 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
               >
                 <WhatsappIcon />
               </a>
+              <a
+                href={FACEBOOK_URL}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={t("site.socialFacebook")}
+                className="grid size-10 place-items-center rounded-full border border-white/15 text-white/80 transition-colors hover:border-accent hover:bg-accent hover:text-deep"
+              >
+                <FacebookIcon />
+              </a>
             </div>
           </section>
         </div>
@@ -215,6 +231,17 @@ function InstagramIcon() {
       <rect x="2" y="2" width="12" height="12" rx="3.6" stroke="currentColor" strokeWidth="1.3" />
       <circle cx="8" cy="8" r="2.8" stroke="currentColor" strokeWidth="1.3" />
       <circle cx="11.6" cy="4.4" r="0.8" fill="currentColor" />
+    </svg>
+  );
+}
+
+function FacebookIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M9.2 14V8.6h1.8l.3-2.1H9.2V5.2c0-.6.2-1 1-1h1.2V2.3c-.2 0-.9-.1-1.7-.1-1.7 0-2.8 1-2.8 2.9v1.4H5.1v2.1H7V14h2.2Z"
+        fill="currentColor"
+      />
     </svg>
   );
 }

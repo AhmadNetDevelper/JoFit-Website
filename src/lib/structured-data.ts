@@ -28,7 +28,7 @@ import { absoluteUrl } from "./url";
 
 /** Verified 2026-09-17, from the client. Changing these changes public claims. */
 const CONTACT = {
-  email: "m.ibdah@jofit.net",
+  email: "info@jofit.net",
   telephone: "+962772116067",
   city: "Amman",
   country: "JO",

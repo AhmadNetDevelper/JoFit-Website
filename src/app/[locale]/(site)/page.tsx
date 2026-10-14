@@ -126,7 +126,9 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
 
       <Why t={t} />
 
-      <CertificationPath locale={locale} t={t} eyebrow={t("landing.pathEyebrow")} />
+      <div data-band style={{ ["--color-accent" as string]: "#d4b36a" }}>
+        <CertificationPath locale={locale} t={t} eyebrow={t("landing.pathEyebrow")} />
+      </div>
 
       {journal.items.length > 0 ? (
         <Section tone="muted" labelledBy="home-journal">
@@ -191,7 +193,7 @@ function Hero({
 
       <Container className="grid items-center gap-14 pt-14 pb-16 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:pt-20 lg:pb-24">
         <div>
-          <p className="eyebrow" data-tone="dark" data-enter style={{ ["--d" as string]: 0 }}>
+          <p className="eyebrow" data-tone="dark" data-enter style={{ ["--d" as string]: 0, ["--color-accent" as string]: "#d4b36a" }}>
             {t("landing.heroEyebrow")}
           </p>
           <h1
@@ -200,16 +202,25 @@ function Hero({
             style={{ ["--d" as string]: 1 }}
             className="mt-6 text-[2.6rem] leading-[1.08] text-white sm:text-6xl lg:text-[4.1rem]"
           >
-            {t("landing.heroTitleLead")} <span className="text-accent">{t("landing.heroTitleAccent")}</span>
+            {t("landing.heroTitleLead")} <span className="text-[#d4b36a]!">{t("landing.heroTitleAccent")}</span>
           </h1>
           <p data-enter style={{ ["--d" as string]: 2 }} className="mt-7 max-w-xl text-[1.08rem] leading-relaxed text-white/75">
-            {t("landing.heroBody")}
+            {t("landing.heroBody")
+              .split("JO FIT")
+              .flatMap((part, i) => [
+                i > 0 ? (
+                  <span key={i} className="text-[#d4b36a]">
+                    JO FIT
+                  </span>
+                ) : null,
+                part,
+              ])}
           </p>
           <p data-enter style={{ ["--d" as string]: 3 }} className="mt-4 max-w-xl text-white/55">
             {t("landing.heroNote")}
           </p>
           <div data-enter style={{ ["--d" as string]: 4 }} className="mt-10 flex flex-wrap items-center gap-3">
-            <Link href={localePath(locale, "/education")} className={buttonClasses({ variant: "gold", size: "lg" })}>
+            <Link href={localePath(locale, "/education")} className={buttonClasses({ variant: "gold", size: "lg", className: "bg-[#d4b36a]! shadow-[0_10px_24px_-12px_#d4b36a]!" })}>
               {t("landing.heroPrimary")}
             </Link>
             <Link href={localePath(locale, "/contact")} className={buttonClasses({ variant: "ghostDark", size: "lg" })}>
@@ -218,7 +229,7 @@ function Hero({
           </div>
         </div>
 
-        <div data-enter="scale" style={{ ["--d" as string]: 2 }} className="relative mx-auto w-full max-w-[27rem] lg:max-w-[30rem]">
+        <div data-enter="scale" style={{ ["--d" as string]: 2, ["--color-accent" as string]: "#d4b36a" }} className="relative mx-auto w-full max-w-[27rem] lg:max-w-[30rem]">
           {/* The rosette turns behind the arch, a halo around the photograph. */}
           <span aria-hidden="true" className="absolute start-1/2 top-[-12%] size-[130%] -translate-x-1/2 text-accent/15 rtl:translate-x-1/2">
             <Rosette className="spin-slow size-full" />
@@ -283,7 +294,11 @@ function Recognition({ t }: { t: Translate }) {
     <section data-band aria-labelledby="home-recognition" className="border-b border-line bg-surface">
       <Container className="flex flex-col items-start gap-8 py-10 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-xl lg:max-w-sm">
-          <p id="home-recognition" className="eyebrow">
+          <p
+            id="home-recognition"
+            className="eyebrow"
+            style={{ ["--color-primary" as string]: "#008050", ["--color-accent" as string]: "#008050" }}
+          >
             {t("landing.recognisedEyebrow")}
           </p>
           <p className="mt-2.5 text-[15px] leading-relaxed text-body">{t("landing.recognisedBody")}</p>
@@ -470,7 +485,10 @@ function Offer({ t }: { t: Translate }) {
 
   return (
     <Section tone="deep" labelledBy="home-offer">
-      <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
+      <div
+        className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16"
+        style={{ ["--color-accent" as string]: "#d4b36a" }}
+      >
         <div>
           <SectionHead id="home-offer" tone="dark" eyebrow={t("landing.offerEyebrow")} title={t("landing.offerTitle")} />
           <Reveal stagger as="ul" className="mt-10 space-y-4">
@@ -509,7 +527,6 @@ function Offer({ t }: { t: Translate }) {
               <span className="size-2 rotate-45 border border-current" />
               <span className="h-px flex-1 bg-current" />
             </span>
-            <figcaption className="mt-6 font-heading text-[1.2rem] font-semibold text-white">{t("landing.supervisionName")}</figcaption>
             <Image
               src="/images/partners/ncsf-seal.png"
               alt={t("site.ncsfSealAlt")}
@@ -567,7 +584,10 @@ function Why({ t }: { t: Translate }) {
 
   return (
     <Section tone="muted" labelledBy="home-why">
-      <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+      <div
+        className="grid items-center gap-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]"
+        style={{ ["--color-accent" as string]: "#d4b36a" }}
+      >
         <div>
           <SectionHead id="home-why" eyebrow={t("landing.whyEyebrow")} title={t("landing.whyTitle")} lead={t("landing.whyLead")} />
           <Reveal stagger as="ul" className="mt-10 grid gap-5 sm:grid-cols-2">

@@ -42,7 +42,7 @@ export function HelpBand({
   return (
     <section data-band aria-labelledby="help-band-title" className={`bg-surface py-16 lg:py-20 ${className}`}>
       <Container>
-        <div className="relative isolate overflow-hidden rounded-[2rem] bg-primary px-6 py-12 text-white sm:px-12 lg:px-16 lg:py-14">
+        <div className="relative isolate overflow-hidden rounded-[2rem] bg-[#005030] px-6 py-12 text-white sm:px-12 lg:px-16 lg:py-14">
           <span aria-hidden="true" className="pattern-waves absolute inset-0 -z-10 text-white/[0.06]" />
           <span aria-hidden="true" className="absolute -end-24 -top-40 -z-10 size-[30rem] text-white/[0.12]">
             <Rosette className="spin-slow size-full" />

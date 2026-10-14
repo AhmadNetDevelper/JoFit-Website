@@ -269,6 +269,7 @@ export function IntroTheater({
       onClose={onClose}
       onKeyDown={onKeyDown}
       onPointerMove={wake}
+      style={{ ["--color-accent" as string]: "#d4b36a" }}
       className="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-hidden border-0 bg-transparent p-0 text-white backdrop:bg-transparent open:flex"
     >
       {/* THE GROUND: deep green, the linework, the rosette. A click on it closes. */}

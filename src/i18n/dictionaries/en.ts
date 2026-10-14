@@ -48,7 +48,7 @@ export const en = {
   "home.metaTitle": "NCSF certifications in Jordan",
   "home.metaDescription": "JoFit is the exclusive official agent of the National Council on Strength & Fitness in Jordan — certifications, specialised courses, coaching, equipment and facility hire.",
 
-  "site.contactEmail": "m.ibdah@jofit.net",
+  "site.contactEmail": "info@jofit.net",
   "site.openingHours": "Sun–Thu 09:00 – 17:00",
   "site.contactPhone": "+962 77 211 6067",
   "site.quoteCta": "Get a quote",
@@ -67,6 +67,7 @@ export const en = {
   "site.follow": "Follow JoFit",
   "site.socialInstagram": "JoFit on Instagram",
   "site.socialWhatsapp": "JoFit on WhatsApp",
+  "site.socialFacebook": "JoFit on Facebook",
   "site.footerAgency": "Official NCSF agent in Jordan",
   "landing.heroEyebrow": "The exclusive and official NCSF agent in Jordan",
   "landing.heroTitleLead": "Grow your career",

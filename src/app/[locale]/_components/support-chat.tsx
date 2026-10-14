@@ -296,7 +296,7 @@ export function SupportChat({
         tabIndex={scrolled ? 0 : -1}
         aria-hidden={!scrolled}
         onClick={scrollToTop}
-        className={`group flex size-12 cursor-pointer items-center justify-center rounded-full bg-accent text-deep shadow-lift ring-4 ring-accent/20 transition-[opacity,transform] duration-500 ease-out ${
+        className={`group flex size-12 cursor-pointer items-center justify-center rounded-full bg-[#d4b36a] text-deep shadow-lift ring-4 ring-[#d4b36a]/20 transition-[opacity,transform] duration-500 ease-out ${
           scrolled ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
         }`}
       >

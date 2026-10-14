@@ -51,7 +51,8 @@ export function themeToCssVars(theme: Theme, direction: "ltr" | "rtl"): Record<s
     "--color-primary": theme.colors.primary,
     "--color-primary-hover": theme.colors.primaryHover,
     "--color-primary-dark": theme.colors.primaryDark,
-    "--color-accent": theme.colors.accent,
+    /* The gold is fixed site-wide: the operator's accent (a teal, #00796B) is not applied. */
+    "--color-accent": defaultTheme.colors.accent,
     "--color-secondary": theme.colors.secondary,
     "--color-on-primary": theme.colors.onPrimary,
     "--color-on-secondary": theme.colors.onSecondary,

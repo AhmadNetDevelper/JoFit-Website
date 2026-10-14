@@ -206,7 +206,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/conta
  * One way to reach the company.
  *
  * The whole card is the link, so its accessible name is "label + value" — for
- * example "Email m.ibdah@jofit.net" — which is descriptive on its own in a
+ * example "Email info@jofit.net" — which is descriptive on its own in a
  * screen reader's link list. That is why the label is not a heading: a heading
  * outside the link would leave the link named by the bare address.
  *

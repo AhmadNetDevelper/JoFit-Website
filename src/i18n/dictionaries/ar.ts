@@ -49,7 +49,7 @@ export const ar: Dictionary = {
   "home.metaTitle": "اعتمادات NCSF في الأردن",
   "home.metaDescription": "جوفِت هي الوكيل الحصري والرسمي للمجلس الوطني للقوة واللياقة البدنية في الأردن — اعتمادات ودورات تخصصية وتدريب ومعدات وتأجير مرافق.",
 
-  "site.contactEmail": "m.ibdah@jofit.net",
+  "site.contactEmail": "info@jofit.net",
   "site.openingHours": "الأحد–الخميس 09:00 – 17:00",
   "site.contactPhone": "+962 77 211 6067",
   "site.quoteCta": "اطلب عرض سعر",
@@ -68,6 +68,7 @@ export const ar: Dictionary = {
   "site.follow": "تابع جوفِت",
   "site.socialInstagram": "جوفِت على إنستغرام",
   "site.socialWhatsapp": "جوفِت على واتساب",
+  "site.socialFacebook": "جوفِت على فيسبوك",
   "site.footerAgency": "الوكيل الرسمي لـ NCSF في الأردن",
   "landing.heroEyebrow": "الوكيل الحصري والرسمي لـ NCSF في الأردن",
   "landing.heroTitleLead": "طوّر مسارك المهني",
@@ -1313,7 +1314,7 @@ export const ar: Dictionary = {
 
   /* education */
   "education.eyebrow": "الوكيل الحصري لـ NCSF في الأردن",
-  "education.heroTitle": "تأهَّل لدى وكيل NCSF في الأردن",
+  "education.heroTitle": "تأهَّل مع وكيل NCSF في الأردن",
   "education.heroLead": "جوفِت هي الوكيل الحصري والرسمي للمجلس الوطني للقوة واللياقة البدنية في المملكة الأردنية الهاشمية. كل دورة أدناه هي برنامج المجلس نفسه، تقدّمه جوفِت هنا في الأردن، والشهادة في نهايته تصدر عن المجلس مباشرة.",
   "education.heroAction": "اطّلع على المؤهّلات الستة",
   "education.statCourses": "الدورات",
