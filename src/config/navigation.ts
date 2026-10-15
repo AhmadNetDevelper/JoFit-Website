@@ -123,7 +123,6 @@ export const primaryNav: readonly NavItem[] = [
         items: [
           { labelKey: "nav.educationAll", href: "/education", feature: "education" },
           { labelKey: "nav.specialisations", href: "/specialisations" },
-          { labelKey: "nav.nutrition", href: "/nutrition" },
           { labelKey: "nav.blog", href: "/blog", feature: "content" },
         ],
       },

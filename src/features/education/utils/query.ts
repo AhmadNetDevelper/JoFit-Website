@@ -9,7 +9,7 @@ import {
   type CourseSortKey,
 } from "../types";
 
-export const COURSE_FORMATS: readonly CourseFormat[] = ["online", "in-person", "hybrid"];
+export const COURSE_FORMATS: readonly CourseFormat[] = ["online", "in-person", "hybrid", "self-paced"];
 export const COURSE_LEVELS: readonly CourseLevel[] = ["beginner", "intermediate", "advanced"];
 
 function readSort(params: RawSearchParams): CourseSortKey | undefined {

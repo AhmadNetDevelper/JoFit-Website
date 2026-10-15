@@ -53,6 +53,7 @@ const FORMAT_LABEL = {
   online: "education.formatOnline",
   "in-person": "education.formatInPerson",
   hybrid: "education.formatHybrid",
+  "self-paced": "education.formatSelfPaced",
 } as const;
 
 const LEVEL_LABEL = {

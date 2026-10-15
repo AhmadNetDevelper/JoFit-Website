@@ -7,7 +7,7 @@ import type { ListQuery, Media, Paginated, Price, PublishStatus, RatingSummary, 
  * and is explicitly out of scope — `CourseModule` describes a syllabus entry for
  * the marketing page, not a playable unit.
  */
-export type CourseFormat = "online" | "in-person" | "hybrid";
+export type CourseFormat = "online" | "in-person" | "hybrid" | "self-paced";
 export type CourseLevel = "beginner" | "intermediate" | "advanced";
 
 export interface CourseCategory {

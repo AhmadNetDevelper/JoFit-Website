@@ -38,10 +38,11 @@ const SEAT_LABEL = {
   upcoming: "education.seatsUpcoming",
 } as const;
 
-const FORMAT_LABEL: Readonly<Record<CourseFormat, "education.formatOnline" | "education.formatInPerson" | "education.formatHybrid">> = {
+const FORMAT_LABEL: Readonly<Record<CourseFormat, "education.formatOnline" | "education.formatInPerson" | "education.formatHybrid" | "education.formatSelfPaced">> = {
   online: "education.formatOnline",
   "in-person": "education.formatInPerson",
   hybrid: "education.formatHybrid",
+  "self-paced": "education.formatSelfPaced",
 };
 
 const LEVEL_LABEL: Readonly<Record<CourseLevel, "education.levelBeginner" | "education.levelIntermediate" | "education.levelAdvanced">> = {

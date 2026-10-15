@@ -88,6 +88,13 @@
   line-height: 1.85;
 }
 
+/* Arabic headings need room for tall ascenders (ال, ف) and deep descenders
+   (ي, ع) on wrapped lines. Unlayered, so it beats per-heading `leading-*`
+   utilities that were tuned for Latin. */
+:root:lang(ar) :is(h1, h2, h3, h4) {
+  line-height: 1.5;
+}
+
 @layer components {
   /*
    * THE EYEBROW.

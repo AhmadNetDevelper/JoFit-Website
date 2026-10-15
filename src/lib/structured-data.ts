@@ -173,7 +173,7 @@ export interface CourseJsonLdInput {
   readonly description: string;
   readonly url: string;
   readonly hours: number;
-  readonly mode: "online" | "in-person" | "hybrid";
+  readonly mode: "online" | "in-person" | "hybrid" | "self-paced";
   readonly priceMinor?: number;
   readonly currency?: string;
   readonly certificationName?: string;
@@ -194,6 +194,7 @@ export function courseJsonLd(input: CourseJsonLdInput) {
     online: "Online",
     "in-person": "Onsite",
     hybrid: "Blended",
+    "self-paced": "Online",
   } as const;
 
   return {

@@ -14,6 +14,7 @@ export const COURSE_FORMAT_LABEL: Readonly<Record<CourseFormat, TranslationKey>>
   online: "course.formatOnline",
   "in-person": "course.formatInPerson",
   hybrid: "course.formatHybrid",
+  "self-paced": "course.formatSelfPaced",
 };
 
 export const COURSE_LEVEL_LABEL: Readonly<Record<CourseLevel, TranslationKey>> = {
