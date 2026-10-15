@@ -37,11 +37,7 @@ const STOPWORDS = new Set(["and", "of", "the", "for", "in"]);
  */
 const COVER_OVERRIDE: Readonly<Record<string, { code: string; en?: string; ar?: string }>> = {
   "certified-personal-trainer": { code: "CPT", en: "Certified Personal Trainer", ar: "المدرب الشخصي المعتمد" },
-  "strength-and-conditioning-specialist": {
-    code: "CSC",
-    en: "Strength & Conditioning Specialist",
-    ar: "القوة والإعداد البدني",
-  },
+  "strength-and-conditioning-specialist": { code: "CSC", en: "Certified Strength Coach", ar: "القوة والتكيّف" },
   "sports-nutrition-specialist": { code: "SNS", en: "Sports Nutrition Specialist", ar: "التغذية الرياضية" },
   "sports-injury-prevention-and-rehabilitation": { code: "SI", en: "Sports Injuries", ar: "الإصابات الرياضية" },
   "professional-pilates-instructor": { code: "PR", en: "Pilates Reformer", ar: "بيلاتس ريفورمر" },
@@ -66,7 +62,7 @@ export function CoverNames({ slug, className = "" }: { slug: string; className?:
       <span dir="ltr" className="text-start">
         {names.en}
       </span>
-      <span dir="rtl" className="text-start">
+      <span dir="rtl" className="text-start text-[13.5px] leading-[1.9]">
         {names.ar}
       </span>
     </span>
