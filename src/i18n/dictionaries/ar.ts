@@ -816,7 +816,7 @@ export const ar: Dictionary = {
   "specialisations.cpt.name": "المدرب الشخصي المعتمد",
   "specialisations.cpt.body": "برنامج متكامل يجمع بين علوم التدريب، التقييم، تصميم البرامج، والتطبيق العملي لتأهيلك للعمل في مجال التدريب الشخصي.",
   "specialisations.strength.index": "02",
-  "specialisations.strength.name": "القوة والإعداد البدني",
+  "specialisations.strength.name": "القوة والتكيّف",
   "specialisations.strength.body": "برنامج يركّز على تطوير عناصر الأداء البدني، مثل القوة والسرعة والتحمل والقدرة، وبناء برامج تدريبية وفق أهداف الرياضي.",
   "specialisations.nutrition.index": "03",
   "specialisations.nutrition.name": "التغذية الرياضية",
