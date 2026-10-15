@@ -53,7 +53,7 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1.5fr)_minmax(0,1fr)]">
           <div className="max-w-sm">
             <Link href={localePath(locale, "/")} aria-label={t("site.name")} className="inline-block">
-              <JofitLogo variant="full" className="jf-logo-lift h-14 w-auto" />
+              <JofitLogo variant="full" className="h-14 w-auto" />
             </Link>
             <p className="mt-6 leading-relaxed">{t("site.footerAbout")}</p>
 
