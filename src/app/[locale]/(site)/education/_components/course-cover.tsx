@@ -29,7 +29,53 @@ import type { Course } from "@/features/education";
  */
 const STOPWORDS = new Set(["and", "of", "the", "for", "in"]);
 
+/**
+ * Covers whose code is not the slug's initials, and the name spelled out on the
+ * cover in both languages. The slug is a URL, so it stays; this is the client's
+ * own wording, shown in English and Arabic whatever the page's locale, because
+ * the code (SI, PR) only means something next to the words it abbreviates.
+ */
+const COVER_OVERRIDE: Readonly<Record<string, { code: string; en?: string; ar?: string }>> = {
+  "certified-personal-trainer": { code: "CPT", en: "Certified Personal Trainer", ar: "المدرب الشخصي المعتمد" },
+  "strength-and-conditioning-specialist": {
+    code: "CSC",
+    en: "Strength & Conditioning Specialist",
+    ar: "القوة والإعداد البدني",
+  },
+  "sports-nutrition-specialist": { code: "SNS", en: "Sports Nutrition Specialist", ar: "التغذية الرياضية" },
+  "sports-injury-prevention-and-rehabilitation": { code: "SI", en: "Sports Injuries", ar: "الإصابات الرياضية" },
+  "professional-pilates-instructor": { code: "PR", en: "Pilates Reformer", ar: "بيلاتس ريفورمر" },
+  "olympic-weightlifting": { code: "OW", en: "Olympic Weightlifting", ar: "رفع الأثقال الأولمبية" },
+  cpd: { code: "CPD", en: "Continuing Professional Development", ar: "ورش التطوير المهني المستمر" },
+};
+
+/** Every CPD workshop (`cpd-…`, or the `cpd` track itself) shares one cover. */
+const coverEntry = (slug: string) => COVER_OVERRIDE[slug.startsWith("cpd") ? "cpd" : slug];
+
+export function hasCoverNames(slug: string): boolean {
+  const names = coverEntry(slug);
+  return Boolean(names?.en && names.ar);
+}
+
+/** The English and Arabic words under a cover's code, for the covers that carry them. */
+export function CoverNames({ slug, className = "" }: { slug: string; className?: string }) {
+  const names = coverEntry(slug);
+  if (!names?.en || !names.ar) return null;
+  return (
+    <span className={`flex flex-col gap-0.5 text-[12.5px] leading-snug font-semibold ${className}`}>
+      <span dir="ltr" className="text-start">
+        {names.en}
+      </span>
+      <span dir="rtl" className="text-start">
+        {names.ar}
+      </span>
+    </span>
+  );
+}
+
 export function courseCode(slug: string): string {
+  const override = coverEntry(slug);
+  if (override) return override.code;
   const words = slug.split("-").filter((word) => word && !STOPWORDS.has(word));
   if (words[0] === "cpd") return "CPD";
   return words
@@ -125,7 +171,13 @@ export function CourseCover({
       <span className={`absolute inset-2.5 rounded-xl border ${ground.frame}`} />
 
       <div className="absolute inset-0 flex flex-col justify-between p-6">
-        {label ? <p className={`text-[12px] font-semibold ${ground.label}`}>{label}</p> : <span />}
+        {hasCoverNames(course.slug) ? (
+          <CoverNames slug={course.slug} className={ground.label} />
+        ) : label ? (
+          <p className={`text-[12px] font-semibold ${ground.label}`}>{label}</p>
+        ) : (
+          <span />
+        )}
         <p className={`font-heading text-[2.6rem] leading-none font-bold tracking-tight ${ground.code}`}>
           <span dir="ltr">{courseCode(course.slug)}</span>
         </p>

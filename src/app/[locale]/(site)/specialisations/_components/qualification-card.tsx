@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowIcon, Rosette } from "@/components/ui";
 import type { Course } from "@/features/education";
 
-import { CourseCover, courseCode } from "../../education/_components/course-cover";
+import { CourseCover, CoverNames, courseCode } from "../../education/_components/course-cover";
 import { CertificateIcon } from "../../education/_components/icons";
 
 /**
@@ -66,6 +66,7 @@ export function QualificationCard({
         <Rosette className="size-full" />
       </span>
       <span className="absolute inset-2.5 rounded-xl border border-accent/35" />
+      <CoverNames slug={coverSlug} className="absolute inset-x-6 top-6 text-accent" />
       <p className="absolute inset-x-6 bottom-6 font-heading text-[2.6rem] leading-none font-bold tracking-tight text-white">
         <span dir="ltr">{courseCode(coverSlug)}</span>
       </p>
