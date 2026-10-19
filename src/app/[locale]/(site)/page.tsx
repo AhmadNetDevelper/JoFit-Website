@@ -75,22 +75,21 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
     contentService.listArticles({ locale, pageSize: 3 }),
   ]);
 
-  const inCategory = (id: string) => catalogue.items.filter((course) => course.categoryIds.includes(id));
   const rank = (course: Course) => {
     const index = PROGRAMME_ORDER.indexOf(course.slug);
     return index === -1 ? PROGRAMME_ORDER.length : index;
   };
-  const programmes = [...inCategory("ccat-certifications"), ...inCategory("ccat-specialised")].sort(
-    (a, b) => rank(a) - rank(b),
-  );
+  // Every course the catalogue returns, in the client's order. Not filtered by
+  // category id: the live API's ids are numeric, not the mocks' `ccat-*`.
+  const programmes = [...catalogue.items].sort((a, b) => rank(a) - rank(b));
 
   return (
     <>
       <Hero
         locale={locale}
         t={t}
-        certificationCount={inCategory("ccat-certifications").length}
-        specialisedCount={inCategory("ccat-specialised").length}
+        programmeCount={programmes.length}
+        accreditationCount={accreditations.length}
       />
       <Recognition t={t} />
       <Intro locale={locale} t={t} />
@@ -172,13 +171,13 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
 function Hero({
   locale,
   t,
-  certificationCount,
-  specialisedCount,
+  programmeCount,
+  accreditationCount,
 }: {
   locale: Locale;
   t: Translate;
-  certificationCount: number;
-  specialisedCount: number;
+  programmeCount: number;
+  accreditationCount: number;
 }) {
   const { number } = getFormatters(locale);
 
@@ -265,15 +264,15 @@ function Hero({
           <dl className="relative mx-auto mt-3 grid w-fit grid-cols-2 gap-px overflow-hidden rounded-2xl bg-white/15 shadow-lift ring-1 ring-white/15 backdrop-blur-md sm:absolute sm:-end-8 sm:bottom-[9%] sm:mx-0 sm:mt-0">
             <div className="bg-deep-2/80 px-4 py-3">
               <dd className="font-heading text-3xl font-bold text-accent" dir="ltr">
-                {number(certificationCount)}
+                {number(programmeCount)}
               </dd>
-              <dt className="mt-1 text-[12px] leading-tight text-white/70">{t("landing.heroCountCerts")}</dt>
+              <dt className="mt-1 text-[12px] leading-tight text-white/70">{t("landing.heroCountProgrammes")}</dt>
             </div>
             <div className="bg-deep-2/80 px-4 py-3">
               <dd className="font-heading text-3xl font-bold text-accent" dir="ltr">
-                {number(specialisedCount)}
+                {number(accreditationCount)}
               </dd>
-              <dt className="mt-1 text-[12px] leading-tight text-white/70">{t("landing.heroCountCourses")}</dt>
+              <dt className="mt-1 text-[12px] leading-tight text-white/70">{t("landing.heroCountBodies")}</dt>
             </div>
           </dl>
         </div>

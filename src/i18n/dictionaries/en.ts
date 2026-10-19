@@ -80,6 +80,8 @@ export const en = {
   "landing.heroSealBody": "Issued by the NCSF itself",
   "landing.heroCountCerts": "International certifications",
   "landing.heroCountCourses": "Specialised courses",
+  "landing.heroCountProgrammes": "Training programmes",
+  "landing.heroCountBodies": "Recognising bodies",
   "landing.recognisedEyebrow": "Recognised internationally",
   "landing.recognisedBody": "Every certificate is issued by the National Council on Strength & Fitness, and carries the international accreditations the council holds.",
   "landing.introEyebrow": "Meet JoFit",

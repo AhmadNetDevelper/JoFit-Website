@@ -81,6 +81,8 @@ export const ar: Dictionary = {
   "landing.heroSealBody": "تصدر عن المجلس مباشرة",
   "landing.heroCountCerts": "اعتمادات دولية",
   "landing.heroCountCourses": "دورات تخصصية",
+  "landing.heroCountProgrammes": "برامج تدريبية",
+  "landing.heroCountBodies": "جهات معتمِدة",
   "landing.recognisedEyebrow": "اعتراف دولي",
   "landing.recognisedBody": "تصدر كل شهادة عن المجلس الوطني للقوة واللياقة البدنية، وتحمل الاعتمادات الدولية التي يحظى بها المجلس.",
   "landing.introEyebrow": "تعرّف على جو فت",
