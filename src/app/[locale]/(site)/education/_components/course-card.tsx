@@ -131,7 +131,7 @@ export function CourseCard({
                   ? "education.hoursUnitFew"
                   : "education.hoursUnit",
               )}
-              {state === "soon" ? null : (
+              {course.nextIntake.pinned ? null : (
                 <>
                   <span className="text-body/35">·</span>
                   <span>{date(course.nextIntake.startsOn)}</span>

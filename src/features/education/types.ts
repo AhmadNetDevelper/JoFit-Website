@@ -57,6 +57,8 @@ export interface CourseIntake {
   readonly seatsTotal: number;
   readonly seatsTaken: number;
   readonly state: CourseEnrolmentState;
+  /** Staff chose the state by hand (anything but "automatic"); the start date is then not shown. */
+  readonly pinned?: boolean;
 }
 
 /**

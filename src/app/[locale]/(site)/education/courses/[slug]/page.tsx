@@ -110,7 +110,7 @@ export default async function CoursePage({ params }: PageProps<"/[locale]/educat
       label: t("course.nextIntakeLabel"),
       value: (
         <span className="flex flex-col gap-1">
-          {intake.state === "soon" ? null : <span>{date(intake.startsOn)}</span>}
+          {intake.pinned ? null : <span>{date(intake.startsOn)}</span>}
           <span className="stock-signal" data-stock={COURSE_STATE_STOCK[intake.state]}>
             {t(COURSE_STATE_LABEL[intake.state])}
           </span>
