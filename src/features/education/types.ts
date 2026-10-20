@@ -39,7 +39,8 @@ export interface CourseCertification {
  * through the shared `.stock-signal` class, so availability reads identically
  * across the site.
  */
-export type CourseEnrolmentState = "open" | "closing" | "full" | "upcoming";
+/** `soon` is pinned by staff in the admin: the course is shown, but nobody can reserve a seat yet. */
+export type CourseEnrolmentState = "open" | "closing" | "full" | "upcoming" | "soon";
 
 /**
  * The next cohort of a course.

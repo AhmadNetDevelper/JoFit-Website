@@ -29,6 +29,7 @@ const SIGNAL: Readonly<Record<CourseEnrolmentState, string>> = {
   closing: "low-stock",
   full: "out-of-stock",
   upcoming: "pre-order",
+  soon: "pre-order",
 };
 
 const SEAT_LABEL = {
@@ -36,6 +37,7 @@ const SEAT_LABEL = {
   closing: "education.seatsClosing",
   full: "education.seatsFull",
   upcoming: "education.seatsUpcoming",
+  soon: "education.seatsSoon",
 } as const;
 
 const FORMAT_LABEL: Readonly<Record<CourseFormat, "education.formatOnline" | "education.formatInPerson" | "education.formatHybrid" | "education.formatSelfPaced">> = {
@@ -129,8 +131,12 @@ export function CourseCard({
                   ? "education.hoursUnitFew"
                   : "education.hoursUnit",
               )}
-              <span className="text-body/35">·</span>
-              <span>{date(course.nextIntake.startsOn)}</span>
+              {state === "soon" ? null : (
+                <>
+                  <span className="text-body/35">·</span>
+                  <span>{date(course.nextIntake.startsOn)}</span>
+                </>
+              )}
             </p>
           </div>
           <span className="grid size-10 shrink-0 place-items-center rounded-full border border-line text-primary transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-on-primary">

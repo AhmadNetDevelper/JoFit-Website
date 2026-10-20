@@ -56,7 +56,11 @@ interface LiveNextIntake {
   readonly seatsTotal: number;
   readonly seatsTaken: number;
   readonly seatsRemaining: number;
+  /** The effective state the backend decided: staff's pinned choice, else worked out from seats and date. */
+  readonly state?: string | null;
 }
+
+const INTAKE_STATES: readonly string[] = ["open", "closing", "full", "upcoming", "soon"];
 
 /**
  * Derives the same four-state signal the mock computes, from the live
@@ -68,6 +72,15 @@ interface LiveNextIntake {
 function deriveIntake(dto: LiveNextIntake | null): CourseIntake {
   if (!dto) {
     return { startsOn: "", seatsTotal: 0, seatsTaken: 0, state: "full" };
+  }
+  /* The backend's own state wins — it knows what staff pinned (e.g. "soon"). */
+  if (dto.state && INTAKE_STATES.includes(dto.state)) {
+    return {
+      startsOn: dto.startsOn,
+      seatsTotal: dto.seatsTotal,
+      seatsTaken: dto.seatsTaken,
+      state: dto.state as CourseEnrolmentState,
+    };
   }
   const daysAhead = Math.round((Date.parse(dto.startsOn) - Date.now()) / 86_400_000);
   const state: CourseEnrolmentState =

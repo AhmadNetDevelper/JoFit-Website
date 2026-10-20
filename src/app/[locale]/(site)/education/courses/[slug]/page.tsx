@@ -97,7 +97,7 @@ export default async function CoursePage({ params }: PageProps<"/[locale]/educat
 
   const intake = course.nextIntake;
   const enrolHref =
-    intake.state === "full"
+    intake.state === "full" || intake.state === "soon"
       ? localePath(locale, "/contact")
       : localePath(locale, `/education/courses/${course.slug}/enrol`);
 
@@ -110,7 +110,7 @@ export default async function CoursePage({ params }: PageProps<"/[locale]/educat
       label: t("course.nextIntakeLabel"),
       value: (
         <span className="flex flex-col gap-1">
-          <span>{date(intake.startsOn)}</span>
+          {intake.state === "soon" ? null : <span>{date(intake.startsOn)}</span>}
           <span className="stock-signal" data-stock={COURSE_STATE_STOCK[intake.state]}>
             {t(COURSE_STATE_LABEL[intake.state])}
           </span>
@@ -213,7 +213,11 @@ export default async function CoursePage({ params }: PageProps<"/[locale]/educat
             </dl>
             <div className="mt-2 grid gap-2.5 px-2 pb-2">
               <Link href={enrolHref} className={buttonClasses({ size: "lg", className: "w-full" })}>
-                {intake.state === "full" ? t("course.enrolWaitlist") : t("course.enrolAction")}
+                {intake.state === "soon"
+                  ? t("course.enrolSoon")
+                  : intake.state === "full"
+                    ? t("course.enrolWaitlist")
+                    : t("course.enrolAction")}
               </Link>
               <Link href={localePath(locale, "/contact")} className={buttonClasses({ variant: "outline", className: "w-full" })}>
                 {t("course.askQuestion")}

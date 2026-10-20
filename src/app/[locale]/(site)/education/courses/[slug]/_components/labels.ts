@@ -28,6 +28,7 @@ export const COURSE_STATE_LABEL: Readonly<Record<CourseEnrolmentState, Translati
   closing: "course.stateClosing",
   full: "course.stateFull",
   upcoming: "course.stateUpcoming",
+  soon: "course.stateSoon",
 };
 
 /**
@@ -47,4 +48,5 @@ export const COURSE_STATE_STOCK: Readonly<
   closing: "low-stock",
   full: "out-of-stock",
   upcoming: "pre-order",
+  soon: "pre-order",
 };

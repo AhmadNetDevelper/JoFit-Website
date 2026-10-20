@@ -169,11 +169,13 @@ export default async function EnrolPage({ params }: PageProps<"/[locale]/educati
                   {t("enrol.seePlace")}
                 </Link>
               </>
-            ) : intake.state === "full" ? (
+            ) : intake.state === "full" || intake.state === "soon" ? (
               <>
-                <p className="mt-6 text-[15px] leading-relaxed text-body">{t("enrol.full")}</p>
+                <p className="mt-6 text-[15px] leading-relaxed text-body">
+                  {intake.state === "soon" ? t("enrol.soon") : t("enrol.full")}
+                </p>
                 <Link href={localePath(locale, "/contact")} className={buttonClasses({ size: "lg", className: "mt-6 w-full" })}>
-                  {t("course.enrolWaitlist")}
+                  {intake.state === "soon" ? t("course.enrolSoon") : t("course.enrolWaitlist")}
                 </Link>
               </>
             ) : (
