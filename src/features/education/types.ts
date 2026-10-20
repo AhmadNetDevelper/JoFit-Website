@@ -92,7 +92,7 @@ export interface Course {
    * shape to read an id from), so this is empty until the API defines one.
    */
   readonly instructorIds: readonly string[];
-  /** The live API has no `modules` array, only `moduleCount` — empty until it does. */
+  /** Filled from the live API's `modules` array once the backend sends it; empty until then. */
   readonly modules: readonly CourseModule[];
   /** How many modules the syllabus has. The live API has a count but no module list. */
   readonly moduleCount?: number;

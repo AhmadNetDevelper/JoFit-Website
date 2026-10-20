@@ -75,6 +75,19 @@ function deriveIntake(dto: LiveNextIntake | null): CourseIntake {
   return { startsOn: dto.startsOn, seatsTotal: dto.seatsTotal, seatsTaken: dto.seatsTaken, state };
 }
 
+/**
+ * One syllabus entry. NOT in the live spec yet — the shape the backend needs to
+ * return as `PublicCourseDto.modules`. Optional so the site keeps working
+ * (empty syllabus) until the API ships it.
+ */
+interface LiveCourseModule {
+  readonly id: number | string;
+  readonly title: string;
+  readonly summary?: string | null;
+  readonly durationMinutes?: number | null;
+  readonly sortOrder?: number | null;
+}
+
 /** `PublicCourseDto` — see `docs/api-live/website.json`. `instructors` is left untyped (`items: {}`) by the live spec itself. */
 interface LiveCourse {
   readonly id: number;
@@ -86,6 +99,8 @@ interface LiveCourse {
   readonly level: string;
   readonly durationHours: number;
   readonly moduleCount: number;
+  /** Not in the live spec yet — see `LiveCourseModule`. */
+  readonly modules?: readonly LiveCourseModule[] | null;
   readonly price: LiveMoney;
   readonly compareAtPrice: LiveMoney | null;
   readonly categories: readonly LiveCourseCategoryRef[];
@@ -149,10 +164,16 @@ function toCourse(dto: LiveCourse): Course {
     // `instructors` has no reliable shape live (the spec itself leaves it
     // untyped) — left empty rather than guessing at a field name.
     instructorIds: [],
-    // No `modules` array live, only a count — the full syllabus entries the
-    // mock fabricates have no live source.
-    modules: [],
-    moduleCount: dto.moduleCount,
+    // Ordered by `sortOrder` when the API sends it, else in the order received.
+    modules: [...(dto.modules ?? [])]
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+      .map((module) => ({
+        id: String(module.id),
+        title: module.title,
+        summary: module.summary ?? undefined,
+        durationMinutes: module.durationMinutes ?? undefined,
+      })),
+    moduleCount: dto.modules?.length ?? dto.moduleCount,
     // No outcomes/audience/assessment live at all.
     outcomes: [],
     audience: [],
