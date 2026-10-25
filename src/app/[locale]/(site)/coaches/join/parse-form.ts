@@ -30,6 +30,11 @@ export const ERROR_KEYS = [
   "email",
   "phone",
   "password",
+  "passwordMismatch",
+  "headline",
+  "sport",
+  "basedIn",
+  "language",
   "gender",
   "country",
   "city",
@@ -80,8 +85,6 @@ export interface ParsedCoachForm {
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-/** ASP.NET Identity's default username alphabet, minus `@` and `+`. */
-const USER_NAME = /^[A-Za-z0-9._-]+$/;
 
 function fileOf(value: FormDataEntryValue | null): File | undefined {
   /* An empty file input still posts a nameless, zero-byte File. */
@@ -148,13 +151,10 @@ export function parseCoachForm(formData: FormData, m: ErrorMessages): ParsedCoac
   const fullName = `${firstName} ${lastName}`;
   tooLong("lastName", fullName, LIMITS.nameMax);
 
-  const userName = text("userName");
-  if (userName.length < LIMITS.userNameMin || userName.length > 64 || !USER_NAME.test(userName)) {
-    fail("userName", m.userName);
-  }
-
+  /* The sign-in name is the email: the form has no separate username box. */
   const email = text("email").toLowerCase();
   if (!EMAIL.test(email) || email.length > 256) fail("email", m.email);
+  const userName = email;
 
   const dialCode = text("dialCode");
   /* A local number is often typed with its trunk zero (079…); the dialling code replaces it. */
@@ -163,6 +163,8 @@ export function parseCoachForm(formData: FormData, m: ErrorMessages): ParsedCoac
 
   const password = String(formData.get("password") ?? "");
   if (password.length < LIMITS.passwordMin || password.length > 256) fail("password", m.password);
+
+  if (password !== String(formData.get("confirmPassword") ?? "")) fail("confirmPassword", m.passwordMismatch);
 
   const birthDate = text("birthDate");
   if (birthDate && (!DATE.test(birthDate) || birthDate >= today() || birthDate < "1900-01-01")) {
@@ -183,6 +185,15 @@ export function parseCoachForm(formData: FormData, m: ErrorMessages): ParsedCoac
     profileText[key] = text(key);
     tooLong(key, profileText[key], key.startsWith("profileName") ? LIMITS.nameMax : LIMITS.profileTextMax);
   }
+
+  if (!profileText.headlineAr) fail("headlineAr", m.headline);
+  if (!profileText.headlineEn) fail("headlineEn", m.headline);
+  const sportIds = [...new Set(formData.getAll("sportIds").map(String).filter((id) => /^\d+$/.test(id)))];
+  if (sportIds.length === 0) fail("sportIds", m.sport);
+  const locationId = text("locationId");
+  if (!/^\d+$/.test(locationId)) fail("locationId", m.basedIn);
+  const languages = (["ar", "en"] as const).filter((code) => formData.getAll("languages").includes(code));
+  if (languages.length === 0) fail("languages", m.language);
 
   /* ── files ── */
   let filesTotal = 0;
@@ -319,10 +330,14 @@ export function parseCoachForm(formData: FormData, m: ErrorMessages): ParsedCoac
       jobStatusId: jobStatusId || undefined,
       profileImage,
       profile: {
-        slug: slugFromUserName(userName),
+        /* A short random tail: `ali@a.com` and `ali@b.com` would otherwise claim the same page address. */
+        slug: `${slugFromUserName(email.split("@")[0]) || "coach"}-${Math.random().toString(36).slice(2, 6)}`,
         /* The coach page needs a name in both languages; the full name stands in for a missing one. */
         name: both(profileText.profileNameEn, profileText.profileNameAr) ?? { en: fullName, ar: fullName },
-        headline: both(profileText.headlineEn, profileText.headlineAr),
+        headline: { en: profileText.headlineEn, ar: profileText.headlineAr },
+        sportIds,
+        locationId,
+        languages,
         bio: both(profileText.bioEn, profileText.bioAr),
       },
       educations,

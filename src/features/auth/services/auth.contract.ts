@@ -35,7 +35,8 @@ import type {
 export interface AuthService {
   signIn(input: SignInInput): Promise<Session>;
   /**
-   * Opens a CUSTOMER account and signs it in. Coaches are not self-serve —
+   * Opens a CUSTOMER account WITHOUT signing it in — the visitor signs in
+   * afterwards on the sign-in screen. Coaches are not self-serve —
    * they are verified by staff before they exist — so registration only ever
    * makes a customer. Rejects an address that already has an account.
    */

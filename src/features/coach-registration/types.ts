@@ -23,6 +23,10 @@ export interface CoachRegistrationOptions {
   readonly jobTypes: readonly RegistrationOption[];
   /** The live API keeps the skill list in its generic `Course` table. */
   readonly skills: readonly RegistrationOption[];
+  /** `GET /v1/sports`: a coach page needs at least one. */
+  readonly sports: readonly RegistrationOption[];
+  /** `GET /v1/coach-locations`: the city a coach is based in. */
+  readonly locations: readonly RegistrationOption[];
 }
 
 /** `User.GenderId`: 1 male, 2 female. */
@@ -84,7 +88,11 @@ export interface CoachRegistration {
   readonly profile: {
     readonly slug: string;
     readonly name: { readonly en: string; readonly ar: string };
-    readonly headline?: { readonly en: string; readonly ar: string };
+    readonly headline: { readonly en: string; readonly ar: string };
+    readonly sportIds: readonly string[];
+    readonly locationId: string;
+    /** `ar` and/or `en`: the languages the coach works in. */
+    readonly languages: readonly ("ar" | "en")[];
     readonly bio?: { readonly en: string; readonly ar: string };
   };
   readonly educations: readonly EducationEntry[];

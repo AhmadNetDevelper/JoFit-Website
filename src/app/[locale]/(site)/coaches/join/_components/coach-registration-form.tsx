@@ -101,6 +101,16 @@ export function CoachRegistrationForm({
   const photoInput = useRef<HTMLInputElement>(null);
   useEffect(() => () => (photo ? URL.revokeObjectURL(photo) : undefined), [photo]);
 
+  /* The send button wakes once every required box is filled (the browser's own validity, kept out of sight by `noValidate`). */
+  const [ready, setReady] = useState(false);
+  const checkReady = () => {
+    const form = formRef.current;
+    const picked = (name: string) => form?.querySelector(`input[name="${name}"]:checked`) !== null;
+    setReady(Boolean(form?.checkValidity()) && picked("sportIds") && picked("languages"));
+  };
+  /* Rows added or removed and the city list loading change what is required, without an input event. */
+  useEffect(checkReady, [educations, certificates, experiences, skills, countryId, cities, citiesPending]);
+
   const shown = local ?? state;
   const errors = shown.status === "error" ? (shown.fieldErrors ?? {}) : {};
 
@@ -220,6 +230,40 @@ export function CoachRegistrationForm({
     </Field>
   );
 
+  /** A required "pick at least one" group of checkboxes, which the browser's own validity does not cover. */
+  const choiceGroup = (
+    name: string,
+    label: string,
+    choices: readonly { value: string; label: string }[],
+    hint?: string,
+    className?: string,
+  ) => (
+    <fieldset className={className} aria-invalid={errorOf(name) ? true : undefined}>
+      <legend className="mb-2 block text-[14px] font-semibold text-ink">
+        {label}
+        <span aria-hidden="true" className="ms-1 text-danger">
+          *
+        </span>
+      </legend>
+      <div className="flex flex-wrap gap-2.5">
+        {choices.map((choice) => (
+          <label key={choice.value} className="cursor-pointer">
+            <input type="checkbox" name={name} value={choice.value} className="peer sr-only" />
+            <span className="inline-flex h-10 items-center rounded-full border border-line bg-surface px-5 text-[14px] font-semibold text-ink transition-colors peer-checked:border-primary peer-checked:bg-primary peer-checked:text-on-primary peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary hover:border-primary/50">
+              {choice.label}
+            </span>
+          </label>
+        ))}
+      </div>
+      {hint ? <p className="mt-1.5 text-[13px] leading-snug text-body/70">{hint}</p> : null}
+      {errorOf(name) ? (
+        <p role="alert" className="mt-1.5 text-[13px] font-medium text-danger">
+          {errorOf(name)}
+        </p>
+      ) : null}
+    </fieldset>
+  );
+
   const textArea = (name: string, label: string, dir: "rtl" | "ltr", lang: Locale) => (
     <Field
       label={labelFor(label, false)}
@@ -333,6 +377,7 @@ export function CoachRegistrationForm({
       onInput={(event) => {
         const name = (event.target as HTMLInputElement).name;
         if (name && errors[name] && !edited.has(name)) setEdited((names) => new Set(names).add(name));
+        checkReady();
       }}
       noValidate
       className="space-y-6"
@@ -351,19 +396,12 @@ export function CoachRegistrationForm({
         <div className="grid gap-5 sm:grid-cols-2">
           {textField("firstName", copy.firstName, { required: true, autoComplete: "given-name", maxLength: 100 })}
           {textField("lastName", copy.lastName, { required: true, autoComplete: "family-name", maxLength: 100 })}
-          {textField("userName", copy.userName, {
-            required: true,
-            autoComplete: "username",
-            dir: "ltr",
-            maxLength: 64,
-            hint: copy.userNameHint,
-          })}
           {textField("email", copy.email, { required: true, type: "email", autoComplete: "email", dir: "ltr", hint: copy.emailHint })}
 
           <Field label={copy.phone} htmlFor={idOf("phone")} required hint={copy.phoneHint} error={errorOf("phone")}>
-            {/* LTR as a unit: the dialling code comes before the number in every language. */}
-            <div dir="ltr" className="grid grid-cols-[minmax(0,10.5rem)_minmax(0,1fr)] gap-2">
-              <select name="dialCode" defaultValue="+962" aria-label={copy.dialCode} className={selectClasses()}>
+            {/* LTR as a unit: the dialling code comes before the number in every language. The code box itself follows the page direction, so its arrow (drawn by the page direction) and its text padding agree. */}
+            <div dir="ltr" className="grid grid-cols-[minmax(0,10rem)_minmax(0,1fr)] gap-2">
+              <select name="dialCode" dir={locale === "ar" ? "rtl" : "ltr"} defaultValue="+962" aria-label={copy.dialCode} className={selectClasses()}>
                 {dialCodes.map((entry) => (
                   <option key={entry.code} value={entry.code}>
                     {entry.label}
@@ -393,6 +431,19 @@ export function CoachRegistrationForm({
             hideLabel={copy.hidePassword}
             error={errorOf("password")}
             markRequired
+          />
+
+          <PasswordField
+            id={idOf("confirmPassword")}
+            name="confirmPassword"
+            label={copy.confirmPassword}
+            autoComplete="new-password"
+            showLabel={copy.showPassword}
+            hideLabel={copy.hidePassword}
+            error={errorOf("confirmPassword")}
+            markRequired
+            matchName="password"
+            mismatchMessage={messages.passwordMismatch}
           />
 
           <Field label={copy.gender} htmlFor={idOf("genderId")} required error={errorOf("genderId")}>
@@ -450,10 +501,16 @@ export function CoachRegistrationForm({
       {/* ── 02 The coach page ── */}
       <FormSection id="profile" index={2} title={copy.profileTitle} lead={copy.profileLead}>
         <div className="grid gap-5 sm:grid-cols-2">
+          {selectField("locationId", copy.basedIn, options.locations, { required: true })}
+          {choiceGroup("languages", copy.languages, [
+            { value: "ar", label: copy.langAr },
+            { value: "en", label: copy.langEn },
+          ])}
+          {choiceGroup("sportIds", copy.sports, options.sports.map((sport) => ({ value: sport.id, label: sport.name })), copy.sportsHint, "sm:col-span-2")}
           {textField("profileNameAr", copy.profileNameAr, { maxLength: LIMITS.nameMax, hint: copy.profileNameHint })}
           {textField("profileNameEn", copy.profileNameEn, { maxLength: LIMITS.nameMax, dir: "ltr" })}
-          {textField("headlineAr", copy.headlineAr, { maxLength: LIMITS.profileTextMax, hint: copy.headlineHint })}
-          {textField("headlineEn", copy.headlineEn, { maxLength: LIMITS.profileTextMax, dir: "ltr" })}
+          {textField("headlineAr", copy.headlineAr, { required: true, maxLength: LIMITS.profileTextMax, hint: copy.headlineHint })}
+          {textField("headlineEn", copy.headlineEn, { required: true, maxLength: LIMITS.profileTextMax, dir: "ltr" })}
           {textArea("bioAr", copy.bioAr, "rtl", "ar")}
           {textArea("bioEn", copy.bioEn, "ltr", "en")}
         </div>
@@ -781,7 +838,7 @@ export function CoachRegistrationForm({
 
         <button
           type="submit"
-          disabled={pending}
+          disabled={pending || !ready || citiesPending}
           aria-busy={pending || undefined}
           className={buttonClasses({ variant: "primary", size: "lg", className: "mt-6 w-full" })}
         >

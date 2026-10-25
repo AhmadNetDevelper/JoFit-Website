@@ -24,8 +24,15 @@ const lookup = (table: string, language: string) =>
     .get<LookupDto[]>(`/v1/${table}/all`, { query: { language }, revalidate: 3600 })
     .then(toOptions);
 
-/** The date input's `YYYY-MM-DD`, as the `date-time` the API binds. */
+/*
+ * The date input's `YYYY-MM-DD`, as the `date-time` the API binds. No `Z`: a UTC
+ * value makes the API's database refuse the save (DbUpdateException, HTTP 500),
+ * and a calendar date has no time zone anyway.
+ */
 const toDateTime = (date: string) => `${date}T00:00:00Z`;
+
+/** `User.BirthOfDate` is a `timestamp without time zone` column, which rejects a UTC value. */
+const toLocalDateTime = (date: string) => `${date}T00:00:00`;
 
 function appendIfSet(form: FormData, key: string, value: string | undefined): void {
   if (value) form.append(key, value);
@@ -44,7 +51,7 @@ function toForm(input: CoachRegistration): FormData {
   form.append("User.Password", input.password);
   form.append("User.PhoneNumber", input.phoneNumber);
   form.append("User.FullName", input.fullName);
-  if (input.birthDate) form.append("User.BirthOfDate", toDateTime(input.birthDate));
+  if (input.birthDate) form.append("User.BirthOfDate", toLocalDateTime(input.birthDate));
   form.append("User.GenderId", String(input.genderId));
   form.append("User.CountryId", input.countryId);
   form.append("User.CityId", input.cityId);
@@ -55,10 +62,11 @@ function toForm(input: CoachRegistration): FormData {
   form.append("Profile.Slug", profile.slug);
   form.append("Profile.Name.En", profile.name.en);
   form.append("Profile.Name.Ar", profile.name.ar);
-  if (profile.headline) {
-    form.append("Profile.Headline.En", profile.headline.en);
-    form.append("Profile.Headline.Ar", profile.headline.ar);
-  }
+  form.append("Profile.Headline.En", profile.headline.en);
+  form.append("Profile.Headline.Ar", profile.headline.ar);
+  form.append("Profile.LocationId", profile.locationId);
+  profile.sportIds.forEach((id, index) => form.append(`Profile.SportIds[${index}]`, id));
+  profile.languages.forEach((language, index) => form.append(`Profile.Languages[${index}]`, language));
   if (profile.bio) {
     form.append("Profile.Bio.En", profile.bio.en);
     form.append("Profile.Bio.Ar", profile.bio.ar);
@@ -114,6 +122,11 @@ const RENAMED: Readonly<Record<string, string>> = {
   isStillWorking: "current",
 };
 
+const BARE_ACCOUNT_KEYS: ReadonlySet<string> = new Set([
+  "email", "userName", "phoneNumber", "fullName", "password", "slug", "sportIds", "locationId", "languages",
+  "headline.en", "headline.ar",
+]);
+
 /**
  * The client files ASP.NET's keys camelCased (`user.email`,
  * `educations[0].startDate`); the contract promises the form's names
@@ -134,7 +147,12 @@ function toFormFieldErrors(apiErrors: Readonly<Record<string, string>>): Record<
       continue;
     }
     const profile = /^profile\.([\w.]+)$/.exec(key);
-    if (profile) fieldErrors[`profile.${profile[1]}`] ??= message;
+    if (profile) {
+      fieldErrors[`profile.${profile[1]}`] ??= message;
+      continue;
+    }
+    /* The coach rules (email taken, slug taken, no sport…) answer with bare names, no `user.`/`profile.` prefix. */
+    if (BARE_ACCOUNT_KEYS.has(key)) fieldErrors[RENAMED[key] ?? key] ??= message;
   }
   return fieldErrors;
 }
@@ -146,15 +164,35 @@ function toFormFieldErrors(apiErrors: Readonly<Record<string, string>>): Record<
  */
 export const httpCoachRegistrationService: CoachRegistrationService = {
   async listOptions(locale) {
+    /* One table that cannot be read leaves its picker empty instead of failing the page. */
+    const load = (table: string) =>
+      lookup(table, locale).catch((error: unknown) => {
+        if (error instanceof AppError) return [];
+        throw error;
+      });
     const [countries, jobStatuses, academicDegrees, universityMajors, jobTypes, skills] = await Promise.all([
-      lookup("Country", locale),
-      lookup("JobStatus", locale),
-      lookup("AcademicDegree", locale),
-      lookup("UniversityMajor", locale),
-      lookup("JobType", locale),
-      lookup("Course", locale),
+      load("Country"),
+      load("JobStatus"),
+      load("AcademicDegree"),
+      load("UniversityMajor"),
+      load("JobType"),
+      load("Course"),
     ]);
-    return { countries, jobStatuses, academicDegrees, universityMajors, jobTypes, skills };
+    const sports = await httpClient
+      .get<LookupDto[]>("/v1/sports", { query: { language: locale }, revalidate: 60 })
+      .then(toOptions)
+      .catch((error: unknown) => {
+        if (error instanceof AppError) return [];
+        throw error;
+      });
+    const locations = await httpClient
+      .get<{ id: number; name: { en: string; ar: string } }[]>("/v1/coach-locations", { revalidate: 60 })
+      .then((rows) => rows.map((row) => ({ id: String(row.id), name: locale === "ar" ? row.name.ar : row.name.en })))
+      .catch((error: unknown) => {
+        if (error instanceof AppError) return [];
+        throw error;
+      });
+    return { countries, jobStatuses, academicDegrees, universityMajors, jobTypes, skills, sports, locations };
   },
 
   listCities: (countryId, locale) =>
@@ -163,7 +201,11 @@ export const httpCoachRegistrationService: CoachRegistrationService = {
         query: { language: locale },
         revalidate: 3600,
       })
-      .then(toOptions),
+      .then(toOptions)
+      .catch((error: unknown) => {
+        if (error instanceof AppError) return [];
+        throw error;
+      }),
 
   async register(input) {
     try {

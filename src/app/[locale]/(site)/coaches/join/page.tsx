@@ -50,10 +50,10 @@ export default async function CoachJoinPage({ params }: PageProps<"/[locale]/coa
   const copy = Object.fromEntries(COPY_KEYS.map((key) => [key, t(`coachJoin.${key}`)])) as FormCopy;
   const messages = Object.fromEntries(ERROR_KEYS.map((key) => [key, t(`coachJoin.err.${key}`)])) as ErrorMessages;
   const regions = new Intl.DisplayNames([locale], { type: "region" });
-  /* A left-to-right mark first, or the Arabic name makes the closed select read right to left and its "+" lands at the far end ("962+"). */
+  /* The code in its own left-to-right isolate, or the Arabic name beside it flips the "+" to the far end ("962+"). */
   const dialCodes = DIAL_CODES.map(({ region, code }) => ({
     code,
-    label: `\u200E${code} · ${regions.of(region) ?? region}`,
+    label: `⁦${code}⁩ ‎· ${regions.of(region) ?? region}`,
   }));
 
   const signInHref = localePath(locale, "/sign-in/coach");

@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { Container, Field, inputClasses, labelClasses } from "@/components/ui";
+import { Container, Field, inputClasses, labelClasses, selectClasses } from "@/components/ui";
 import { authService, homePathFor, safeReturnPath } from "@/features/auth";
 import { getTranslator, localePath, resolveLocale } from "@/i18n";
 import { buildMetadata } from "@/lib";
 
 import { ActionForm, type FormState } from "../_components/portal/action-form";
-import { failed } from "../_components/portal/form-state";
+import { failed, succeeded } from "../_components/portal/form-state";
 import { AuthPanel } from "../sign-in/_components/auth-panel";
+import { PasswordInput } from "./_components/password-input";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/sign-up">) {
   const locale = resolveLocale((await params).locale);
@@ -37,30 +38,38 @@ export default async function SignUpPage({ params, searchParams }: PageProps<"/[
   const existing = await authService.getSession();
   if (existing) redirect(localePath(locale, returnTo ?? homePathFor(existing.account.role)));
 
+  /* Strings, not `t`: a Server Action serialises what it closes over, and a function can't be. */
   const fallback = t("state.errorTitle");
+  const successMessage = t("signUp.success");
+  const mismatch = t("signUp.passwordMismatch");
 
   async function register(_state: FormState, formData: FormData): Promise<FormState> {
     "use server";
+    if (formData.get("password") !== formData.get("confirmPassword")) return { status: "error", message: mismatch };
     try {
       await authService.register({
         name: String(formData.get("name") ?? ""),
         email: String(formData.get("email") ?? ""),
         phone: String(formData.get("phone") ?? ""),
         password: String(formData.get("password") ?? ""),
+        genderId: formData.get("genderId") === "2" ? 2 : 1,
         locale: formData.get("locale") === "ar" ? "ar" : "en",
         marketingOptIn: formData.get("marketing") === "on",
       });
     } catch (error) {
       return failed(error, fallback);
     }
-    redirect(`${localePath(locale, returnTo ?? "/account")}${returnTo ? "" : "?welcome=1"}`);
+    return succeeded(successMessage);
   }
+
+  const signInHref = `${localePath(locale, "/sign-in")}${returnTo ? `?next=${encodeURIComponent(returnTo)}` : ""}`;
 
   const fields = [
     { name: "name", label: t("signUp.name"), type: "text", autoComplete: "name", required: true },
     { name: "email", label: t("signIn.email"), type: "email", autoComplete: "email", required: true, dir: "ltr" as const },
     { name: "phone", label: t("signUp.phone"), type: "tel", autoComplete: "tel", required: false, dir: "ltr" as const },
     { name: "password", label: t("signIn.password"), type: "password", autoComplete: "new-password", required: true, dir: "ltr" as const },
+    { name: "confirmPassword", label: t("signUp.confirmPassword"), type: "password", autoComplete: "new-password", required: true, dir: "ltr" as const },
   ];
 
   return (
@@ -94,15 +103,18 @@ export default async function SignUpPage({ params, searchParams }: PageProps<"/[
 
             <ActionForm
               action={register}
+              redirectTo={signInHref}
               submitLabel={t("signUp.submit")}
               pendingLabel={t("account.working")}
               className="space-y-5"
+              requireComplete
               submitSize="lg" submitClassName="w-full"
             >
               {fields.map((field) => (
                 <Field
                   key={field.name}
                   htmlFor={`signup-${field.name}`}
+                  required={field.required}
                   label={
                     <>
                       {field.label}
@@ -112,18 +124,40 @@ export default async function SignUpPage({ params, searchParams }: PageProps<"/[
                     </>
                   }
                 >
-                  <input
-                    id={`signup-${field.name}`}
-                    name={field.name}
-                    type={field.type}
-                    required={field.required}
-                    minLength={field.name === "password" ? 8 : undefined}
-                    autoComplete={field.autoComplete}
-                    dir={field.dir ?? "auto"}
-                    className={inputClasses()}
-                  />
+                  {field.type === "password" ? (
+                    <PasswordInput
+                      id={`signup-${field.name}`}
+                      name={field.name}
+                      autoComplete="new-password"
+                      minLength={8}
+                      showLabel={t("signIn.showPassword")}
+                      hideLabel={t("signIn.hidePassword")}
+                      matchName={field.name === "confirmPassword" ? "password" : undefined}
+                      mismatchMessage={t("signUp.passwordMismatch")}
+                    />
+                  ) : (
+                    <input
+                      id={`signup-${field.name}`}
+                      name={field.name}
+                      type={field.type}
+                      required={field.required}
+                      autoComplete={field.autoComplete}
+                      dir={field.dir ?? "auto"}
+                      className={inputClasses()}
+                    />
+                  )}
                 </Field>
               ))}
+
+              <Field htmlFor="signup-genderId" label={t("signUp.gender")} required>
+                <select id="signup-genderId" name="genderId" required defaultValue="" className={selectClasses()}>
+                  <option value="" disabled>
+                    {t("signUp.genderChoose")}
+                  </option>
+                  <option value="1">{t("signUp.genderMale")}</option>
+                  <option value="2">{t("signUp.genderFemale")}</option>
+                </select>
+              </Field>
 
               <fieldset>
                 <legend className={labelClasses}>{t("account.language")}</legend>

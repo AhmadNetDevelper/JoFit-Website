@@ -1,6 +1,7 @@
 "use client";
 
-import { startTransition, useActionState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { startTransition, useActionState, useEffect, useRef, useState, type ReactNode } from "react";
 
 import { buttonClasses, type ButtonSize } from "@/components/ui";
 
@@ -55,6 +56,9 @@ export function ActionForm({
   submitClassName = "",
   submitSize = "md",
   resetOnSuccess = false,
+  redirectTo,
+  redirectDelayMs = 2000,
+  requireComplete = false,
 }: {
   action: (state: FormState, formData: FormData) => Promise<FormState>;
   submitLabel: string;
@@ -72,9 +76,28 @@ export function ActionForm({
   /** The pill's size, as in `buttonClasses`: `lg` for the one action of a form page. */
   submitSize?: ButtonSize;
   resetOnSuccess?: boolean;
+  /** Where to go once the action succeeds, after the success message has been shown for `redirectDelayMs`. */
+  redirectTo?: string;
+  redirectDelayMs?: number;
+  /** Keep the button off until every `required` box is filled. */
+  requireComplete?: boolean;
 }) {
   const [state, run, pending] = useActionState(action, IDLE);
+  const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
+  const [complete, setComplete] = useState(!requireComplete);
+  const checkComplete = () => {
+    if (requireComplete) setComplete(formRef.current?.checkValidity() ?? false);
+  };
+  useEffect(checkComplete);
   const errors = Object.values(state.fieldErrors ?? {});
+  const redirecting = state.status === "ok" && redirectTo !== undefined;
+
+  useEffect(() => {
+    if (!redirecting) return;
+    const timer = setTimeout(() => router.push(redirectTo), redirectDelayMs);
+    return () => clearTimeout(timer);
+  }, [redirecting, redirectTo, redirectDelayMs, router]);
 
   const button =
     tone === "danger"
@@ -83,7 +106,9 @@ export function ActionForm({
 
   return (
     <form
+      ref={formRef}
       action={run}
+      onInput={checkComplete}
       /* React resets a form after every \`action\` submission — a refused one
          too — which would empty every box the person has to correct. Once
          hydrated, the submission is dispatched here instead, so the values
@@ -123,7 +148,7 @@ export function ActionForm({
         ) : null}
       </div>
 
-      <button type="submit" disabled={pending} aria-busy={pending || undefined} className={`mt-5 ${button}`}>
+      <button type="submit" disabled={pending || redirecting || !complete} aria-busy={pending || undefined} className={`mt-5 ${button}`}>
         {pending ? <Spinner /> : null}
         <span>{pending ? pendingLabel : submitLabel}</span>
       </button>

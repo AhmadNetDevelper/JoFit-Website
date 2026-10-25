@@ -75,11 +75,13 @@ export const httpAuthService: AuthService = {
   },
 
   async register(input) {
-    /* Multipart-only server-side — no JSON option exists for this endpoint. */
+    /* `POST /v1/auth/register` — multipart-only; creates the customer account and
+       answers the same credential as sign-in. It is deliberately NOT stored: the
+       visitor is sent to the sign-in screen to sign in themselves. */
     const form = new FormData();
     form.append("FullName", input.name);
     form.append("Email", input.email);
-    form.append("Phone", input.phone ?? "");
+    if (input.phone) form.append("Phone", input.phone);
     form.append("Password", input.password);
     form.append("Locale", input.locale);
     form.append("MarketingOptIn", String(input.marketingOptIn));
@@ -88,8 +90,8 @@ export const httpAuthService: AuthService = {
     if (input.genderId !== undefined) form.append("GenderId", String(input.genderId));
     if (input.countryId) form.append("CountryId", input.countryId);
     if (input.cityId) form.append("CityId", input.cityId);
-    const signedIn = await httpClient.post<SignedIn>("/v1/auth/register", form, { cache: "no-store" });
-    return startSession(signedIn);
+    const created = await httpClient.post<SignedIn>("/v1/auth/register", form, { cache: "no-store" });
+    return toSession(created.session);
   },
 
   async registerEmployer(input) {

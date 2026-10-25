@@ -190,15 +190,21 @@ export function SignInForm({
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             placeholder={copy.passwordPlaceholder}
-            className={inputClasses("pe-20")}
+            className={inputClasses("pe-14")}
           />
           <button
             type="button"
             onClick={() => setVisible((shown) => !shown)}
             aria-pressed={visible}
-            className="absolute inset-y-1 end-1 cursor-pointer rounded-lg px-3.5 text-[13px] font-semibold text-primary-dark transition-colors hover:bg-primary-05"
+            aria-label={visible ? copy.hidePassword : copy.showPassword}
+            title={visible ? copy.hidePassword : copy.showPassword}
+            className="absolute inset-y-1 end-1 grid w-10 cursor-pointer place-items-center rounded-lg text-body transition-colors hover:bg-primary-05 hover:text-primary-dark"
           >
-            {visible ? copy.hidePassword : copy.showPassword}
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+              <circle cx="12" cy="12" r="3" />
+              {visible ? null : <path d="M4 4l16 16" />}
+            </svg>
           </button>
         </div>
       </div>

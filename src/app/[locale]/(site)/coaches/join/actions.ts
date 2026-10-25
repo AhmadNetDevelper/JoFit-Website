@@ -32,11 +32,21 @@ const LIST_GROUP: Readonly<Record<string, RowGroup>> = {
 const ACCOUNT_FIELD: Readonly<Record<string, string>> = {
   fullName: "firstName",
   phoneNumber: "phone",
-  "profile.slug": "userName",
-  "profile.name.en": "profileNameEn",
-  "profile.name.ar": "profileNameAr",
+  userName: "email",
+  slug: "email",
+  "profile.slug": "email",
+  "profile.sportIds": "sportIds",
+  "profile.locationId": "locationId",
+  "profile.languages": "languages",
+  sportIds: "sportIds",
+  locationId: "locationId",
+  languages: "languages",
+  "headline.en": "headlineEn",
+  "headline.ar": "headlineAr",
   "profile.headline.en": "headlineEn",
   "profile.headline.ar": "headlineAr",
+  "profile.name.en": "profileNameEn",
+  "profile.name.ar": "profileNameAr",
   "profile.bio.en": "bioEn",
   "profile.bio.ar": "bioAr",
 };
@@ -54,6 +64,33 @@ function toFormNames(fieldErrors: Readonly<Record<string, string>>, rowKeys: Row
   return mapped;
 }
 
+/** Names the form has a box for; an API error under any other name would be marked nowhere. */
+const SHOWN_FIELDS = new Set([
+  "firstName", "lastName", "email", "phone", "password", "confirmPassword", "genderId", "birthDate", "countryId",
+  "cityId", "jobStatusId", "profileNameAr", "profileNameEn", "headlineAr", "headlineEn", "bioAr", "bioEn", "profileImage", "sportIds", "locationId", "languages",
+]);
+
+/** The API's messages for fields the form does not show, so a refusal is never silent. */
+function unplacedMessages(fieldErrors: Readonly<Record<string, string>>): string[] {
+  return [
+    ...new Set(
+      Object.entries(fieldErrors)
+        .filter(([key]) => !SHOWN_FIELDS.has(key) && !/^(education|certificate|experience|skill)\./.test(key))
+        .map(([, message]) => message),
+    ),
+  ];
+}
+
+/** The API's English sentences, in the reader's language where the form has a translation. */
+function localizeApiMessage(message: string, t: ReturnType<typeof getTranslator>): string {
+  if (/username or email already exists|already uses this (email|slug)/i.test(message)) return t("coachJoin.err.taken");
+  if (/at least one sport/i.test(message)) return t("coachJoin.err.sport");
+  if (/choose a location/i.test(message)) return t("coachJoin.err.basedIn");
+  if (/at least one language/i.test(message)) return t("coachJoin.err.language");
+  if (/headline is required/i.test(message)) return t("coachJoin.err.headline");
+  return message;
+}
+
 export async function registerCoachAction(_state: FormState, formData: FormData): Promise<FormState> {
   const locale = resolveLocale(String(formData.get("locale") ?? ""));
   const t = getTranslator(locale);
@@ -68,13 +105,20 @@ export async function registerCoachAction(_state: FormState, formData: FormData)
     await coachRegistrationService.register(parsed.registration);
   } catch (error) {
     if (!isAppError(error)) return { status: "error", message: t("state.errorTitle") };
-    const fieldErrors = toFormNames(fieldErrorsOf(error), parsed.rowKeys);
+    const fieldErrors = Object.fromEntries(
+      Object.entries(toFormNames(fieldErrorsOf(error), parsed.rowKeys)).map(([key, message]) => [key, localizeApiMessage(message, t)]),
+    );
+    const apiMessage = localizeApiMessage(error.message, t);
+    /* The API's "same username or email" arrives with no field attached: it belongs on the email box. */
+    if (apiMessage === t("coachJoin.err.taken") && !fieldErrors.email) fieldErrors.email = apiMessage;
     if (error.code === "conflict") {
       const taken = t("coachJoin.err.taken");
       return { status: "error", message: taken, fieldErrors: Object.keys(fieldErrors).length ? fieldErrors : { email: taken } };
     }
     if (error.code === "validation" || Object.keys(fieldErrors).length > 0) {
-      return { status: "error", message: messages.fix, fieldErrors };
+      /* Nothing mapped to a box: the API's own sentence is all there is to say, so say it. */
+      const unplaced = Object.keys(fieldErrors).length === 0 ? [apiMessage] : unplacedMessages(fieldErrors);
+      return { status: "error", message: [messages.fix, ...unplaced].filter(Boolean).join(" — "), fieldErrors };
     }
     return { status: "error", message: error.message || t("state.errorTitle") };
   }

@@ -141,9 +141,8 @@ export const mockAuthService: AuthService = {
     });
     store.addresses.set(id, []);
 
-    const account = findAccountByEmail(email)!;
-    await startSession(account);
-    return { account };
+    /* No session is started: the visitor signs in next, as against the live API. */
+    return { account: findAccountByEmail(email)! };
   },
 
   async registerEmployer(input) {

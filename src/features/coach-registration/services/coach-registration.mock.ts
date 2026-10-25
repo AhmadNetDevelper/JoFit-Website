@@ -49,6 +49,8 @@ export const mockCoachRegistrationService: CoachRegistrationService = {
       universityMajors: localize(mockUniversityMajors, locale),
       jobTypes: localize(mockJobTypes, locale),
       skills: localize(mockSkills, locale),
+      sports: [{ id: "1", name: locale === "ar" ? "لياقة بدنية" : "Fitness" }],
+      locations: [{ id: "1", name: locale === "ar" ? "عمّان" : "Amman" }],
     };
   },
 
