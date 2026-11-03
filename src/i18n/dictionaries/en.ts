@@ -36,6 +36,7 @@ export const en = {
   "nav.group.browse": "Browse",
   "nav.group.certifications": "NCSF certifications",
   "nav.group.specialised": "Specialised courses",
+  "nav.courseFirstAid": "First aid",
   "nav.certCpt": "Certified Personal Trainer (NCSF-CPT)",
   "nav.certStrength": "Strength & Conditioning",
   "nav.certNutrition": "Sports Nutrition",

@@ -114,7 +114,13 @@ export const primaryNav: readonly NavItem[] = [
             href: "/education/courses/professional-pilates-instructor",
           },
           { labelKey: "nav.courseWeightlifting", href: "/education/courses/olympic-weightlifting" },
-          { labelKey: "nav.courseCeu", href: "/education/categories/cpd" },
+        ],
+      },
+      {
+        id: "nav-edu-ceu",
+        labelKey: "nav.courseCeu",
+        items: [
+          { labelKey: "nav.courseFirstAid", href: "/education/courses/cpd-sideline-first-aid" },
         ],
       },
       {
@@ -140,7 +146,6 @@ export const primaryNav: readonly NavItem[] = [
         items: [
           { labelKey: "nav.shopAll", href: "/shop", feature: "shop" },
           { labelKey: "nav.brands", href: "/shop/brands", feature: "shop" },
-          { labelKey: "nav.sports", href: "/sports", feature: "sports" },
         ],
       },
     ],

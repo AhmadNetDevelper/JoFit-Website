@@ -37,6 +37,7 @@ export const ar: Dictionary = {
   "nav.group.browse": "تصفّح",
   "nav.group.certifications": "الاعتمادات الدولية",
   "nav.group.specialised": "الدورات التخصصية",
+  "nav.courseFirstAid": "الإسعافات الأولية",
   "nav.certCpt": "المدرب الشخصي المعتمد",
   "nav.certStrength": "القوة والإعداد البدني",
   "nav.certNutrition": "التغذية الرياضية",

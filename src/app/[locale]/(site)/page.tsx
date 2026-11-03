@@ -229,22 +229,27 @@ function Hero({
         </div>
 
         <div data-enter="scale" style={{ ["--d" as string]: 2, ["--color-accent" as string]: "#d4b36a" }} className="relative mx-auto w-full max-w-[27rem] lg:max-w-[30rem]">
-          {/* The rosette turns behind the arch, a halo around the photograph. */}
-          <span aria-hidden="true" className="absolute start-1/2 top-[-12%] size-[130%] -translate-x-1/2 text-accent/15 rtl:translate-x-1/2">
-            <Rosette className="spin-slow size-full" />
-          </span>
-          {/* The arch: a tall frame with a rounded head, lined in gold — a coach leading a class. */}
-          <div className="relative aspect-[5/6] overflow-hidden rounded-t-[999px] rounded-b-[2.25rem] bg-deep-2 shadow-lift ring-1 ring-white/10">
-            <Image
-              src="/images/hero/hero-coaching.webp"
-              alt=""
-              fill
-              priority
-              sizes="(min-width: 1024px) 480px, 90vw"
-              className="object-cover object-[20%_50%]"
-            />
-            <span aria-hidden="true" className="absolute inset-0 bg-linear-to-t from-deep/75 via-deep/10 to-primary/10" />
-            <span aria-hidden="true" className="absolute inset-3 rounded-t-[999px] rounded-b-[1.75rem] border border-accent/50" />
+          {/* The photograph is a circle, concentric with the rosette: the rosette's
+              own outer rings (r 190–196 of 200) become the halo around it, so the
+              image and the pattern read as one mark instead of a rectangle laid
+              over a circle. The rosette sits on the photo's own wrapper so the
+              two stay centred however tall the badges below make the column. */}
+          <div className="relative aspect-square">
+            <span aria-hidden="true" className="absolute start-1/2 top-1/2 size-[112%] -translate-x-1/2 -translate-y-1/2 text-accent/20 rtl:translate-x-1/2">
+              <Rosette className="spin-slow size-full" />
+            </span>
+            <div className="relative size-full overflow-hidden rounded-full bg-deep-2 shadow-lift ring-1 ring-white/10">
+              <Image
+                src="/images/hero/hero-coaching.webp"
+                alt=""
+                fill
+                priority
+                sizes="(min-width: 1024px) 480px, 90vw"
+                className="object-cover object-[35%_50%]"
+              />
+              <span aria-hidden="true" className="absolute inset-0 bg-linear-to-t from-deep/70 via-deep/5 to-primary/10" />
+              <span aria-hidden="true" className="absolute inset-3 rounded-full border border-accent/50" />
+            </div>
           </div>
 
           <div className="relative mx-auto mt-5 flex max-w-[15.5rem] items-center gap-3 rounded-2xl bg-white p-3.5 pe-5 text-deep shadow-lift sm:absolute sm:top-[5%] sm:-start-12 sm:mx-0 sm:mt-0 lg:-start-14">
