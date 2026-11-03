@@ -24,6 +24,34 @@ import { CertificateIcon } from "../../education/_components/icons";
  * it yet), the cover is drawn from the slug alone and the certificate line is
  * left out — the card never invents what the data does not say.
  */
+/**
+ * The client's programme photographs, by course slug. A course the backend
+ * returns without media (a fresh database, a local API) would otherwise fall
+ * back to the drawn certificate cover, and the same page would look different
+ * from one environment to the next. The photograph the API sends always wins.
+ */
+const FALLBACK_PHOTO: Readonly<Record<string, { name: string; width: number; height: number }>> = {
+  "certified-personal-trainer": { name: "personal-trainer-1", width: 736, height: 736 },
+  "strength-and-conditioning-specialist": { name: "strength-conditioning-1", width: 736, height: 736 },
+  "sports-nutrition-specialist": { name: "sports-nutrition-1", width: 736, height: 676 },
+  "sports-injury-prevention-and-rehabilitation": { name: "sports-injuries-1", width: 736, height: 736 },
+  "professional-pilates-instructor": { name: "reformer-pilates-1", width: 736, height: 851 },
+  "olympic-weightlifting": { name: "olympic-weightlifting-1", width: 736, height: 736 },
+};
+
+function withPhoto(course: Course): Course {
+  if (course.media.some((entry) => entry.kind === "image")) return course;
+  const photo = FALLBACK_PHOTO[course.slug];
+  if (!photo) return course;
+  return {
+    ...course,
+    media: [
+      { kind: "image", id: `img-course-${photo.name}`, url: `/images/courses/${photo.name}.jpg`, alt: "", width: photo.width, height: photo.height },
+      ...course.media,
+    ],
+  };
+}
+
 export function QualificationCard({
   index,
   name,
@@ -55,7 +83,7 @@ export function QualificationCard({
 
   const cover = course ? (
     <CourseCover
-      course={course}
+      course={withPhoto(course)}
       label={coverLabel}
       priority={priority}
       sizes={row ? "(min-width: 640px) 240px, 100vw" : "(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"}
