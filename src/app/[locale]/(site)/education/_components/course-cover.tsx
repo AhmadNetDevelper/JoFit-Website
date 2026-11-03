@@ -112,43 +112,64 @@ const GROUND: Readonly<Record<Ground, { box: string; code: string; frame: string
   },
 };
 
+/** A programme photograph in the cover's frame: gold hairline, deep wash, label at the foot. */
+export function PhotoCover({
+  url,
+  label,
+  priority = false,
+  sizes = "(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw",
+  className = "",
+  clearBadge = false,
+}: {
+  url: string;
+  label?: string;
+  priority?: boolean;
+  sizes?: string;
+  className?: string;
+  clearBadge?: boolean;
+}) {
+  return (
+    <div className={`relative isolate aspect-[16/10] overflow-hidden rounded-2xl bg-deep ${className}`}>
+      <Image
+        src={url}
+        alt=""
+        fill
+        priority={priority}
+        sizes={sizes}
+        className="-z-10 object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+      />
+      <span aria-hidden="true" className="absolute inset-0 -z-10 bg-linear-to-t from-deep/85 via-deep/15 to-transparent" />
+      <span aria-hidden="true" className="absolute inset-2.5 rounded-xl border border-white/25" />
+      {label ? (
+        <p className={`absolute start-5 text-[12px] font-semibold text-accent ${clearBadge ? "bottom-10" : "bottom-4"}`}>
+          {label}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 export function CourseCover({
   course,
   label,
   priority = false,
   sizes = "(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw",
   className = "",
+  clearBadge = false,
 }: {
   course: Course;
   /** The small line over the code — the category, or "Issued by NCSF". */
   label?: string;
   priority?: boolean;
+  /** Lift a photo's label clear of a number badge sitting on the cover's lower edge. */
+  clearBadge?: boolean;
   sizes?: string;
   className?: string;
 }) {
   const image = course.media.find((entry) => entry.kind === "image");
 
   if (image) {
-    return (
-      <div className={`relative isolate aspect-[16/10] overflow-hidden rounded-2xl bg-deep ${className}`}>
-        <Image
-          src={image.url}
-          alt=""
-          fill
-          priority={priority}
-          sizes={sizes}
-          className="-z-10 object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-        />
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-linear-to-t from-deep/85 via-deep/15 to-transparent"
-        />
-        <span aria-hidden="true" className="absolute inset-2.5 rounded-xl border border-white/25" />
-        {label ? (
-          <p className="absolute start-5 bottom-4 text-[12px] font-semibold text-accent">{label}</p>
-        ) : null}
-      </div>
-    );
+    return <PhotoCover url={image.url} label={label} priority={priority} sizes={sizes} className={className} clearBadge={clearBadge} />;
   }
 
   const ground = GROUND[groundFor(course)];

@@ -147,7 +147,12 @@ export default async function SpecialisationsPage({ params }: PageProps<"/[local
       item.courseSlug ? `/education/courses/${item.courseSlug}` : `/education/categories/${item.categorySlug}`,
     );
 
-  const categoryName = (course?: Course) => categories.find((entry) => entry.id === course?.categoryIds[0])?.name;
+  /* The cover's small line: the course's category when the catalogue holds it,
+     otherwise the page's own heading for the strand the card sits in, so the
+     cover reads the same whether or not the backend answered. */
+  const categoryName = (course: Course | undefined, layout: "stack" | "row") =>
+    categories.find((entry) => entry.id === course?.categoryIds[0])?.name ??
+    t(layout === "stack" ? "landing.certsEyebrow" : "landing.specialEyebrow");
 
   const card = (item: Qualification, layout: "stack" | "row", priority = false) => {
     const course = courseFor(item);
@@ -161,7 +166,7 @@ export default async function SpecialisationsPage({ params }: PageProps<"/[local
           action={item.courseSlug ? t("specialisations.viewCourse") : t("specialisations.viewWorkshops")}
           course={course}
           coverSlug={item.courseSlug ?? item.categorySlug ?? item.id}
-          coverLabel={categoryName(course)}
+          coverLabel={categoryName(course, layout)}
           certificate={course?.certification?.name}
           layout={layout}
           priority={priority}
