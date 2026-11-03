@@ -159,6 +159,8 @@ export interface AccountEnrolment {
    * fabricate it from.
    */
   readonly price?: Money;
+  /** Why staff cancelled the place. Only present on a cancelled enrolment. */
+  readonly cancellationReason?: string;
 }
 
 export type ReviewTargetType = "product" | "rental-item" | "coach" | "course";

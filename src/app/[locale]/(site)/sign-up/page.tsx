@@ -134,6 +134,21 @@ export default async function SignUpPage({ params, searchParams }: PageProps<"/[
                       hideLabel={t("signIn.hidePassword")}
                       matchName={field.name === "confirmPassword" ? "password" : undefined}
                       mismatchMessage={t("signUp.passwordMismatch")}
+                      strength={
+                        field.name === "password"
+                          ? {
+                              invalid: t("signUp.passwordWeak"),
+                              levels: [t("signUp.strengthWeak"), t("signUp.strengthMedium"), t("signUp.strengthStrong")],
+                              rules: {
+                                length: t("signUp.ruleLength"),
+                                lower: t("signUp.ruleLower"),
+                                upper: t("signUp.ruleUpper"),
+                                digit: t("signUp.ruleDigit"),
+                                symbol: t("signUp.ruleSymbol"),
+                              },
+                            }
+                          : undefined
+                      }
                     />
                   ) : (
                     <input

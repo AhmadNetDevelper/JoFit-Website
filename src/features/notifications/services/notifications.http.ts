@@ -17,9 +17,23 @@ interface LiveNotificationFeed {
   readonly unreadCount: number;
 }
 
+/**
+ * Enrolment notifications written before the API was fixed point at
+ * `/account/courses`, which is not a page; the place list lives at
+ * `/account/enrolments`.
+ */
+function fixHref(href: string): string {
+  return href === "/account/courses" ? "/account/enrolments" : href;
+}
+
 function toFeed(dto: LiveNotificationFeed): NotificationFeed {
   return {
-    items: dto.items.map((item) => ({ ...item, id: String(item.id), kind: item.kind as NotificationKind })),
+    items: dto.items.map((item) => ({
+      ...item,
+      id: String(item.id),
+      kind: item.kind as NotificationKind,
+      href: fixHref(item.href),
+    })),
     unreadCount: dto.unreadCount,
   };
 }

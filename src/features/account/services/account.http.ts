@@ -123,6 +123,7 @@ interface LiveEnrolment {
   readonly amountPaid: Money;
   readonly progressPercent: number;
   readonly enrolledAt: string;
+  readonly cancellationReason?: string | null;
 }
 
 /** `AccountReviewDto`. */
@@ -295,14 +296,15 @@ function toEnrolment(dto: LiveEnrolment): AccountEnrolment {
     reference: dto.reference,
     courseId: String(dto.course.id),
     courseTitle: dto.course.title,
-    // Live sends courseHref directly (nullable); built from the course slug
-    // on the rare response that omits it.
-    courseHref: dto.courseHref ?? `/education/courses/${dto.course.slug}`,
+    // Built from the slug, not taken from live's `courseHref`: the site owns its
+    // routes, and that field comes back without the `/education` prefix (404).
+    courseHref: `/education/courses/${dto.course.slug}`,
     cohortStartsOn: dto.cohortStartsOn ?? undefined,
     status: dto.status as AccountEnrolmentStatus,
     progressPercent: dto.progressPercent,
     enrolledAt: dto.enrolledAt,
     amountPaid: dto.amountPaid,
+    cancellationReason: dto.cancellationReason ?? undefined,
     // price: no live source — AccountEnrolmentDto has no full-price field (see types.ts).
   };
 }

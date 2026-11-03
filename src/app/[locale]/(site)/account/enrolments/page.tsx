@@ -79,6 +79,11 @@ export default async function AccountEnrolmentsPage({
                           {place.reference}
                         </span>
                       </p>
+                      {place.status === "cancelled" && place.cancellationReason ? (
+                        <p className="mt-3 rounded-xl bg-danger/10 px-3.5 py-2.5 text-[13.5px] leading-relaxed text-ink">
+                          <span className="font-semibold">{t("account.cancellationReason")}</span> {place.cancellationReason}
+                        </p>
+                      ) : null}
                       {place.status === "pending" ? (
                         <p className="mt-3 rounded-xl bg-accent-10 px-3.5 py-2.5 text-[13.5px] leading-relaxed text-ink">
                           {t("account.placeHeldNoFee")}
