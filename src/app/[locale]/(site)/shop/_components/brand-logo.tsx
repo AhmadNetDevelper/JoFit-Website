@@ -49,7 +49,7 @@ export function BrandLogo({
           fill
           priority={priority}
           sizes={sizes}
-          className={onDark ? "object-contain brightness-0 invert" : "object-contain"}
+          className={onDark ? "object-contain brightness-0 invert" : "object-contain mix-blend-multiply"}
         />
       </span>
     </span>

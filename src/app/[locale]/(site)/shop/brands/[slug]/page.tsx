@@ -113,11 +113,12 @@ export default async function BrandPage({ params, searchParams }: PageProps<"/[l
            drawn for a white page; contained, never cropped (`BrandLogo`). */
         aside={
           brand.logo ? (
-            <div className="relative mx-auto w-full max-w-sm rounded-[2rem] bg-white/[0.06] p-2.5 ring-1 ring-accent/40 backdrop-blur-sm transition-transform duration-500 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:scale-[1.02]">
-              {/* No white card: the mark is recoloured white and floats on a
-                  frosted-glass panel with a gold hairline and soft inner glow. */}
-              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.10),rgba(255,255,255,0.02)_70%)] p-4 sm:p-8">
-                <BrandLogo logo={brand.logo} priority sizes="360px" bare onDark className="aspect-[4/3] w-full" />
+            <div className="relative mx-auto w-full max-w-sm rounded-[2rem] bg-accent/25 p-2 shadow-lift ring-1 ring-accent/60 transition-transform duration-500 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:scale-[1.02]">
+              {/* Not stark white: a warm ivory panel in the site's palette, a
+                  gold outer ring and a deep-green inner line. The mark keeps
+                  its own colours and multiplies into the tint. */}
+              <div className="relative overflow-hidden rounded-3xl border border-deep/15 bg-[radial-gradient(ellipse_at_center,#fbf8ef_40%,#efe7d2_100%)] p-4 sm:p-8">
+                <BrandLogo logo={brand.logo} priority sizes="360px" bare className="aspect-[4/3] w-full" />
               </div>
             </div>
           ) : undefined
