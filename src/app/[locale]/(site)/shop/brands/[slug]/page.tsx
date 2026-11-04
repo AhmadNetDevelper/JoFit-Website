@@ -113,12 +113,12 @@ export default async function BrandPage({ params, searchParams }: PageProps<"/[l
            drawn for a white page; contained, never cropped (`BrandLogo`). */
         aside={
           brand.logo ? (
-            <div className="relative mx-auto w-full max-w-sm rounded-[2rem] bg-accent/25 p-2 shadow-lift ring-1 ring-accent/60 transition-transform duration-500 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:scale-[1.02]">
-              {/* Not stark white: a warm ivory panel in the site's palette, a
-                  gold outer ring and a deep-green inner line. The mark keeps
-                  its own colours and multiplies into the tint. */}
-              <div className="relative overflow-hidden rounded-3xl border border-deep/15 bg-[radial-gradient(ellipse_at_center,#fbf8ef_40%,#efe7d2_100%)] p-4 sm:p-8">
-                <BrandLogo logo={brand.logo} priority sizes="360px" bare className="aspect-[4/3] w-full" />
+            <div className="relative mx-auto aspect-square w-full max-w-[20rem] rounded-full bg-accent/25 p-2.5 shadow-lift ring-1 ring-accent/60 transition-transform duration-500 ease-out motion-safe:hover:scale-[1.03]">
+              {/* A seal: ivory disc in the site's palette, gold outer ring,
+                  deep-green inner line. The wordmark is inset so a wide logo
+                  clears the curve; it keeps its own colours. */}
+              <div className="grid size-full place-items-center overflow-hidden rounded-full border border-deep/15 bg-[radial-gradient(circle_at_center,#fbf8ef_40%,#efe7d2_100%)] p-[16%]">
+                <BrandLogo logo={brand.logo} priority sizes="320px" bare className="aspect-[3/2] w-full" />
               </div>
             </div>
           ) : undefined
