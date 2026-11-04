@@ -24,7 +24,10 @@ export function BrandLogo({
   className,
   priority = false,
   bare = false,
+  onDark = false,
 }: {
+  /** Recolours the mark to solid white, for sitting straight on a dark surface. Needs a truly transparent logo. */
+  onDark?: boolean;
   logo: MediaImage;
   /** The box's rendered width, for `next/image` to pick a file. */
   sizes: string;
@@ -46,7 +49,7 @@ export function BrandLogo({
           fill
           priority={priority}
           sizes={sizes}
-          className="object-contain"
+          className={onDark ? "object-contain brightness-0 invert" : "object-contain"}
         />
       </span>
     </span>

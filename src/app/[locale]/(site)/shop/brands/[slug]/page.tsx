@@ -113,11 +113,11 @@ export default async function BrandPage({ params, searchParams }: PageProps<"/[l
            drawn for a white page; contained, never cropped (`BrandLogo`). */
         aside={
           brand.logo ? (
-            <div className="relative mx-auto w-full max-w-sm rounded-[2rem] bg-white p-2.5 shadow-lift ring-1 ring-accent/40 transition-transform duration-500 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:scale-[1.02]">
-              {/* One frame, not two: a soft spotlight behind the mark, a
-                  gold hairline echoing the hero's accent, and a larger mark. */}
-              <div className="relative overflow-hidden rounded-3xl bg-[radial-gradient(ellipse_at_center,#ffffff_45%,#f1f4ef_100%)] p-4 sm:p-6">
-                <BrandLogo logo={brand.logo} priority sizes="360px" bare className="aspect-[4/3] w-full" />
+            <div className="relative mx-auto w-full max-w-sm rounded-[2rem] bg-white/[0.06] p-2.5 ring-1 ring-accent/40 backdrop-blur-sm transition-transform duration-500 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:scale-[1.02]">
+              {/* No white card: the mark is recoloured white and floats on a
+                  frosted-glass panel with a gold hairline and soft inner glow. */}
+              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.10),rgba(255,255,255,0.02)_70%)] p-4 sm:p-8">
+                <BrandLogo logo={brand.logo} priority sizes="360px" bare onDark className="aspect-[4/3] w-full" />
               </div>
             </div>
           ) : undefined
