@@ -113,8 +113,12 @@ export default async function BrandPage({ params, searchParams }: PageProps<"/[l
            drawn for a white page; contained, never cropped (`BrandLogo`). */
         aside={
           brand.logo ? (
-            <div className="mx-auto w-full max-w-sm rounded-3xl bg-white p-6 shadow-lift">
-              <BrandLogo logo={brand.logo} priority sizes="320px" className="aspect-[3/2] w-full" />
+            <div className="relative mx-auto w-full max-w-sm rounded-[2rem] bg-white p-2.5 shadow-lift ring-1 ring-accent/40 transition-transform duration-500 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:scale-[1.02]">
+              {/* One frame, not two: a soft spotlight behind the mark, a
+                  gold hairline echoing the hero's accent, and a larger mark. */}
+              <div className="relative overflow-hidden rounded-3xl bg-[radial-gradient(ellipse_at_center,#ffffff_45%,#f1f4ef_100%)] p-4 sm:p-6">
+                <BrandLogo logo={brand.logo} priority sizes="360px" bare className="aspect-[4/3] w-full" />
+              </div>
             </div>
           ) : undefined
         }

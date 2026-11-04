@@ -23,16 +23,23 @@ export function BrandLogo({
   sizes,
   className,
   priority = false,
+  bare = false,
 }: {
   logo: MediaImage;
   /** The box's rendered width, for `next/image` to pick a file. */
   sizes: string;
   className: string;
   priority?: boolean;
+  /** No border/background of its own and less clear space — for when the caller already supplies the frame. */
+  bare?: boolean;
 }) {
   return (
-    <span className={`relative block shrink-0 overflow-hidden rounded-2xl border border-line bg-surface ${className}`}>
-      <span className="absolute inset-[12%]">
+    <span
+      className={`relative block shrink-0 overflow-hidden ${
+        bare ? "" : "rounded-2xl border border-line bg-surface"
+      } ${className}`}
+    >
+      <span className={`absolute ${bare ? "inset-[6%]" : "inset-[12%]"}`}>
         <Image
           src={logo.url}
           alt={logo.alt}
