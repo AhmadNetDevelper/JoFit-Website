@@ -113,11 +113,11 @@ export default async function BrandPage({ params, searchParams }: PageProps<"/[l
            drawn for a white page; contained, never cropped (`BrandLogo`). */
         aside={
           brand.logo ? (
-            <div className="relative mx-auto aspect-square w-full max-w-[13rem] rounded-full bg-accent/25 p-2 shadow-lift ring-1 ring-accent/60 transition-transform duration-500 ease-out motion-safe:hover:scale-[1.03]">
+            <div className="relative mx-auto aspect-square w-full max-w-[13rem] rounded-full bg-white/10 p-2 shadow-lift ring-1 ring-accent/50 transition-transform duration-500 ease-out motion-safe:hover:scale-[1.03]">
               {/* A seal: ivory disc in the site's palette, gold outer ring,
                   deep-green inner line. The wordmark is inset so a wide logo
                   clears the curve; it keeps its own colours. */}
-              <div className="grid size-full place-items-center overflow-hidden rounded-full border border-deep/15 bg-[radial-gradient(circle_at_center,#fbf8ef_40%,#efe7d2_100%)] p-[16%]">
+              <div className="grid size-full place-items-center overflow-hidden rounded-full border border-line bg-surface p-[16%]">
                 <BrandLogo logo={brand.logo} priority sizes="208px" bare className="aspect-[3/2] w-full" />
               </div>
             </div>
